@@ -389,6 +389,7 @@
     .clone-item {
       position: absolute;
       touch-action: none;
+      transform-origin: center center;
     }
 
     .rotate-handle {
@@ -1465,9 +1466,10 @@
     });
 
     function applyTransform(el) {
-      const rot = el.dataset.rotation || 0;
-      const scaleX = el.dataset.scaleX || 1;
+      const rot    = parseFloat(el.dataset.rotation || 0);
+      const scaleX = parseFloat(el.dataset.scaleX   || 1);
       el.style.transform = `rotate(${rot}deg) scaleX(${scaleX})`;
+      el.style.transformOrigin = 'center center';
     }
 
     canvasArea.addEventListener('pointerdown', () => {
