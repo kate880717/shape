@@ -35,15 +35,13 @@
     display:flex; flex-direction:column; overflow:hidden;
   }
 
-  /* ===== 핵심: 도형 단어 색상 컴포넌트 ===== */
+  /* ===== 핵심: 도형 단어 색상 컴포넌트 (글자 색만) ===== */
   .shape-word {
-    display:inline-block; padding:3px 14px; border-radius:10px;
-    font-weight:bold; box-shadow:0 2px 6px rgba(0,0,0,0.1);
-    margin:0 3px; white-space:nowrap;
+    font-weight:bold; white-space:nowrap;
   }
-  .shape-word.circle   { background:var(--circle-color);   color:#5c4400; }
-  .shape-word.triangle { background:var(--triangle-color); color:white; }
-  .shape-word.square   { background:var(--square-color);   color:white; }
+  .shape-word.circle   { color:#e6a800; }
+  .shape-word.triangle { color:#1864ab; }
+  .shape-word.square   { color:#c0392b; }
 
   /* ===== Header (Stamp Path) ===== */
   header {
@@ -98,22 +96,19 @@
 
   /* ===== 1줄 요약 Reminder Bar ===== */
   #concept-reminder {
-    display:none; padding:10px 25px;
-    background:linear-gradient(90deg,#fff8dc,#e3f2fd,#ffebee);
-    border-bottom:3px solid white; flex-shrink:0;
+    display:none; padding:10px 25px; background:white;
+    border-bottom:2px solid #eee; flex-shrink:0;
   }
   #concept-reminder.show {
-    display:flex; gap:12px; justify-content:center;
+    display:flex; gap:25px; justify-content:center;
     flex-wrap:wrap; align-items:center;
   }
   .reminder-chip {
-    padding:8px 18px; border-radius:25px; font-size:18px;
-    font-weight:bold; box-shadow:0 3px 10px rgba(0,0,0,0.15);
-    border:2px solid white;
+    font-size:18px; font-weight:bold;
   }
-  .reminder-chip.circle   { background:var(--circle-color);   color:#5c4400; }
-  .reminder-chip.triangle { background:var(--triangle-color); color:white; }
-  .reminder-chip.square   { background:var(--square-color);   color:white; }
+  .reminder-chip.circle   { color:#e6a800; }
+  .reminder-chip.triangle { color:#1864ab; }
+  .reminder-chip.square   { color:#c0392b; }
 
   /* ===== Screens ===== */
   .screen {
