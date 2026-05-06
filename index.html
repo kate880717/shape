@@ -39,7 +39,7 @@
   .shape-word {
     display:inline-block; padding:3px 14px; border-radius:10px;
     font-weight:bold; box-shadow:0 2px 6px rgba(0,0,0,0.1);
-    margin:0 3px;
+    margin:0 3px; white-space:nowrap;
   }
   .shape-word.circle   { background:var(--circle-color);   color:#5c4400; }
   .shape-word.triangle { background:var(--triangle-color); color:white; }
@@ -1510,6 +1510,8 @@ document.getElementById('popup-yes').addEventListener('click', () => {
   isRelearning = true;
   conceptPopupIdx = 0;
   showScreen('screen-concept');
+  // 자동으로 팝업 띄우기
+  setTimeout(() => showConceptPopup(0), 400);
 });
 document.getElementById('popup-no').addEventListener('click', async () => {
   document.getElementById('popup-bg').classList.remove('show');
