@@ -96,13 +96,50 @@
 
   /* ===== Concept Reminder Bar ===== */
   #concept-reminder {
-    display:none; padding:10px 25px; background:rgba(255,255,255,0.6);
-    border-bottom:2px solid rgba(255,255,255,0.5); flex-shrink:0;
+    display:none; padding:8px 25px; background:linear-gradient(90deg,#fff8dc,#e3f2fd,#ffebee);
+    border-bottom:3px solid rgba(255,255,255,0.8); flex-shrink:0;
   }
   #concept-reminder.show { display:flex; gap:15px; justify-content:center; flex-wrap:wrap; align-items:center; }
   .reminder-chip {
     padding:6px 16px; border-radius:20px; color:white; font-size:18px;
-    font-weight:bold; box-shadow:0 3px 8px rgba(0,0,0,0.1);
+    font-weight:bold; box-shadow:0 3px 8px rgba(0,0,0,0.15);
+  }
+
+  /* ===== Hint Button & Hint Box ===== */
+  .hint-btn {
+    padding:14px 24px; border-radius:50px; border:none;
+    background:#feca57; color:#333; font-size:20px; font-weight:bold;
+    cursor:pointer; box-shadow:0 6px 14px rgba(254,202,87,0.4);
+    transition:all 0.2s;
+  }
+  .hint-btn:hover { transform:translateY(-2px); background:#ffb800; }
+  .hint-btn:active { transform:translateY(1px); }
+  .hint-btn.active { background:#ff9f43; }
+  .hint-box {
+    width:100%; background:#fffacd; border:3px dashed #f9ca24;
+    border-radius:15px; padding:15px 22px; margin-top:10px;
+    animation:fadeIn 0.4s ease;
+  }
+  .hint-box p { margin:6px 0; font-size:20px; color:#444; line-height:1.5; }
+  .hint-box p:first-child { color:#e67e22; font-size:22px; }
+
+  /* ===== Must-words hint (변, 꼭짓점 강조) ===== */
+  .must-words-hint {
+    width:100%; background:linear-gradient(135deg,#ffe066,#ffd43b);
+    border:3px solid #fcc419; border-radius:15px;
+    padding:12px 20px; margin-bottom:12px;
+    font-size:22px; font-weight:bold; color:#5c4400;
+    text-align:center; display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap;
+    box-shadow:0 5px 15px rgba(252,196,25,0.3);
+  }
+  .must-word {
+    background:white; color:var(--primary); padding:6px 18px;
+    border-radius:30px; font-size:24px; font-weight:bold;
+    box-shadow:0 3px 8px rgba(0,0,0,0.1); animation:wordPulse 2s infinite;
+  }
+  @keyframes wordPulse {
+    0%,100% { transform:scale(1); }
+    50% { transform:scale(1.05); }
   }
 
   /* ===== Screens ===== */
@@ -142,11 +179,11 @@
     box-shadow:0 10px 30px rgba(0,0,0,0.05);
   }
   textarea.stt-text {
-    width:100%; height:130px; background:white; border-radius:15px;
-    padding:18px; font-size:24px; color:#333; text-align:left;
+    width:100%; height:160px; background:white; border-radius:15px;
+    padding:20px; font-size:30px; color:#333; text-align:left;
     border:3px dashed #ccc; resize:none; outline:none;
     transition:all 0.3s; user-select:text; -webkit-user-select:text;
-    font-family:'Jua',sans-serif; line-height:1.5;
+    font-family:'Jua',sans-serif; line-height:1.5; font-weight:bold;
   }
   textarea.stt-text:focus { border-color:var(--secondary); box-shadow:0 0 15px rgba(78,205,196,0.3); }
   textarea.stt-text.recording { border-color:var(--primary); border-style:solid; box-shadow:0 0 15px rgba(255,107,107,0.3); }
@@ -195,20 +232,21 @@
 
   /* ===== Concept Cards ===== */
   .concept-slide-container {
-    width:100%; max-width:900px; flex:1; display:flex;
+    width:100%; max-width:1000px; flex:1; display:flex;
     flex-direction:column; align-items:center; justify-content:center;
   }
   .concept-card-big {
-    width:100%; padding:30px 40px; border-radius:25px; text-align:center;
-    box-shadow:0 15px 35px rgba(0,0,0,0.1); margin-bottom:18px; color:white;
+    width:100%; padding:40px 50px; border-radius:30px; text-align:center;
+    box-shadow:0 20px 50px rgba(0,0,0,0.15); margin-bottom:18px; color:white;
     animation:pop 0.5s ease;
+    border:6px solid white;
   }
-  .concept-card-big.circle   { background:linear-gradient(135deg,#f9ca24,#f0932b); }
-  .concept-card-big.triangle { background:linear-gradient(135deg,#4a90e2,#2a5aa8); }
-  .concept-card-big.square   { background:linear-gradient(135deg,#eb4d4b,#c0392b); }
+  .concept-card-big.circle   { background:linear-gradient(135deg,#ffe066,#fcc419,#f59f00); }
+  .concept-card-big.triangle { background:linear-gradient(135deg,#74c0fc,#4a90e2,#1864ab); }
+  .concept-card-big.square   { background:linear-gradient(135deg,#ff8787,#eb4d4b,#c0392b); }
   .concept-shape-big {
-    width:120px; height:120px; margin:0 auto 15px auto;
-    filter:drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+    width:140px; height:140px; margin:0 auto 18px auto;
+    filter:drop-shadow(0 8px 20px rgba(0,0,0,0.3));
   }
   .concept-shape-big.circle   { background:white; border-radius:50%; }
   .concept-shape-big.square   { background:white; }
@@ -216,12 +254,24 @@
     background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,5 5,95 95,95" fill="white"/></svg>');
     background-size:contain; background-repeat:no-repeat; background-position:center;
   }
-  .concept-card-big h3 { font-size:38px; margin:0 0 10px 0; }
-  .concept-card-big p { font-size:22px; line-height:1.5; margin:5px 0; word-break:keep-all; }
+  .concept-card-big h3 {
+    font-size:50px; margin:0 0 15px 0;
+    text-shadow:2px 2px 4px rgba(0,0,0,0.2);
+    background:white; color:#333; display:inline-block;
+    padding:8px 30px; border-radius:50px;
+  }
+  .concept-card-big.circle h3 { color:#f59f00; }
+  .concept-card-big.triangle h3 { color:#1864ab; }
+  .concept-card-big.square h3 { color:#c0392b; }
+  .concept-card-big p { font-size:26px; line-height:1.6; margin:8px 0; word-break:keep-all; font-weight:bold; }
+  .concept-card-big p b {
+    background:rgba(255,255,255,0.3); padding:2px 12px; border-radius:8px;
+    display:inline-block;
+  }
 
   .slide-nav { display:flex; gap:15px; align-items:center; }
-  .slide-dot { width:14px; height:14px; border-radius:50%; background:#ccc; transition:all 0.3s; }
-  .slide-dot.active { background:var(--primary); transform:scale(1.3); }
+  .slide-dot { width:18px; height:18px; border-radius:50%; background:#ccc; transition:all 0.3s; opacity:0.4; border:2px solid white; }
+  .slide-dot.active { transform:scale(1.5); opacity:1; box-shadow:0 0 0 4px rgba(255,255,255,0.6), 0 4px 10px rgba(0,0,0,0.2); }
 
   /* ===== Practice ===== */
   .practice-area {
@@ -434,17 +484,26 @@
 
   <!-- Stage 1: 처음 생각 -->
   <div id="screen-stage1" class="screen">
-    <h2 class="tts-text">자신이 알고 있는 <span style="color:var(--circle-color);">원</span>, <span style="color:var(--triangle-color);">삼각형</span>, <span style="color:var(--square-color);">사각형</span>에 대해 얘기해볼까요?</h2>
-    <p class="small-help">💭 모양이 어떻게 생겼는지, 어디에서 봤는지 자유롭게 말해도 돼요!</p>
-
-    <div class="record-box">
-      <textarea class="stt-text" id="stt-stage1" placeholder="🎤 마이크 버튼을 누르거나 키보드로 직접 써도 돼요!"></textarea>
+    <div class="record-box" style="margin-top:0;">
+      <div style="width:100%; text-align:center; margin-bottom:10px;">
+        <div style="font-size:30px; color:#333; font-weight:bold;">
+          🌱 자신이 알고 있는 <span style="color:var(--circle-color); background:#fff8dc; padding:2px 10px; border-radius:8px;">원</span> <span style="color:var(--triangle-color); background:#e3f2fd; padding:2px 10px; border-radius:8px;">삼각형</span> <span style="color:var(--square-color); background:#ffebee; padding:2px 10px; border-radius:8px;">사각형</span>에 대해 얘기해볼까요?
+        </div>
+      </div>
+      <textarea class="stt-text tts-text" id="stt-stage1" placeholder="🎤 마이크 버튼을 누르거나 키보드로 직접 써도 돼요!"></textarea>
       <div class="recording-controls">
         <button class="mic-btn" id="mic-stage1">🔴 녹음 시작</button>
         <button class="play-btn" id="play-stage1" disabled>▶️ 다시 듣기</button>
+        <button class="hint-btn" id="hint-stage1">💡 힌트 보기</button>
       </div>
-      <p class="help-tip">💡 도움이 필요하면 오른쪽 위 💡 버튼을 눌러보세요!</p>
+      <div id="hint-stage1-box" class="hint-box" style="display:none;">
+        <p>💡 <b>이렇게 말해보세요!</b></p>
+        <p>"동그란 모양은 원이에요."</p>
+        <p>"세모는 뾰족한 곳이 있어요."</p>
+        <p>"네모는 곧은 선 4개로 되어 있어요."</p>
+      </div>
     </div>
+    <p class="small-help" style="margin-top:15px;">💭 모양이 어떻게 생겼는지, 어디에서 봤는지 자유롭게 말해도 돼요!</p>
     <div style="margin-top:18px;">
       <button class="btn" id="next-stage1" style="display:none;">다음으로 ➡️</button>
     </div>
@@ -452,15 +511,15 @@
 
   <!-- Stage 2: 개념 학습 -->
   <div id="screen-concept" class="screen">
-    <h2 class="tts-text" id="concept-title">도형 친구들을 만나볼까요?</h2>
+    <h2 class="tts-text" id="concept-title">📚 도형 친구를 한 명씩 만나볼까요? <span id="slide-counter" style="color:var(--primary); background:white; padding:4px 16px; border-radius:30px; font-size:24px; margin-left:10px;">1 / 3</span></h2>
 
     <div class="concept-slide-container" id="concept-slides"></div>
 
     <div class="slide-nav" style="margin-top:8px;">
       <button class="btn btn-yellow" id="concept-prev" style="font-size:22px; padding:10px 20px;">⬅️ 이전</button>
-      <div class="slide-dot active" data-idx="0"></div>
-      <div class="slide-dot" data-idx="1"></div>
-      <div class="slide-dot" data-idx="2"></div>
+      <div class="slide-dot" data-idx="0" style="background:var(--circle-color);"></div>
+      <div class="slide-dot" data-idx="1" style="background:var(--triangle-color);"></div>
+      <div class="slide-dot" data-idx="2" style="background:var(--square-color);"></div>
       <button class="btn btn-yellow" id="concept-next" style="font-size:22px; padding:10px 20px;">다음 ➡️</button>
     </div>
 
@@ -477,17 +536,28 @@
 
   <!-- Stage 3: 관찰하기 -->
   <div id="screen-stage2" class="screen">
-    <h2 class="tts-text">교실에 있는 물건들을 관찰하고<br><span style="color:var(--circle-color);">동그라미</span>, <span style="color:var(--triangle-color);">세모</span>, <span style="color:var(--square-color);">네모</span> 모양의 물건을 말해보세요!</h2>
-    <p class="small-help">👀 책상, 칠판, 시계, 책... 무엇이 보이나요?</p>
-
-    <div class="record-box">
-      <textarea class="stt-text" id="stt-stage2" placeholder="예: 칠판은 네모예요. 시계는 동그라미 모양이에요..."></textarea>
+    <div class="record-box" style="margin-top:0;">
+      <div style="width:100%; text-align:center; margin-bottom:10px;">
+        <div style="font-size:28px; color:#333; font-weight:bold; line-height:1.4;">
+          👀 교실에 있는 물건들을 관찰하고<br>
+          <span style="color:var(--circle-color); background:#fff8dc; padding:2px 10px; border-radius:8px;">동그라미</span> <span style="color:var(--triangle-color); background:#e3f2fd; padding:2px 10px; border-radius:8px;">세모</span> <span style="color:var(--square-color); background:#ffebee; padding:2px 10px; border-radius:8px;">네모</span> 모양의 물건을 말해보세요!
+        </div>
+      </div>
+      <textarea class="stt-text tts-text" id="stt-stage2" placeholder="예: 칠판은 네모예요.&#10;시계는 동그라미 모양이에요..."></textarea>
       <div class="recording-controls">
         <button class="mic-btn" id="mic-stage2">🔴 녹음 시작</button>
         <button class="play-btn" id="play-stage2" disabled>▶️ 다시 듣기</button>
+        <button class="hint-btn" id="hint-stage2">💡 힌트 보기</button>
+      </div>
+      <div id="hint-stage2-box" class="hint-box" style="display:none;">
+        <p>💡 <b>이렇게 찾아보세요!</b></p>
+        <p>⚪ 동그라미: 시계, 동전, 축구공</p>
+        <p>🔺 세모: 자, 삼각자, 지붕</p>
+        <p>🟥 네모: 칠판, 책, 창문, 책상</p>
       </div>
     </div>
-    <div style="margin-top:18px;">
+    <p class="small-help" style="margin-top:15px;">📝 줄바꿈은 엔터(↵)로 할 수 있어요!</p>
+    <div style="margin-top:15px;">
       <button class="btn" id="next-stage2" style="display:none;">다음으로 ➡️</button>
     </div>
   </div>
@@ -543,22 +613,40 @@
 
   <!-- Stage 6: 나중 생각 -->
   <div id="screen-stage5" class="screen">
-    <h2 class="tts-text" id="stage5-title">내가 알게 된 <span style="color:var(--circle-color);">원</span>, <span style="color:var(--triangle-color);">삼각형</span>, <span style="color:var(--square-color);">사각형</span>에 대해 다시 얘기해볼까요?</h2>
-    <p class="small-help" id="stage5-sub">💡 <b>변</b>과 <b>꼭짓점</b> 단어를 꼭 사용해보세요!</p>
+    <div class="record-box" style="margin-top:0;">
+      <div style="width:100%; text-align:center; margin-bottom:10px;">
+        <div style="font-size:28px; color:#333; font-weight:bold;">
+          🌟 내가 알게 된 <span style="color:var(--circle-color); background:#fff8dc; padding:2px 10px; border-radius:8px;">원</span> <span style="color:var(--triangle-color); background:#e3f2fd; padding:2px 10px; border-radius:8px;">삼각형</span> <span style="color:var(--square-color); background:#ffebee; padding:2px 10px; border-radius:8px;">사각형</span>에 대해 다시 얘기해볼까요?
+        </div>
+      </div>
 
-    <div class="example-card" id="example-card">
-      <h3>📖 이렇게 말해보세요 (예시 문장 - 클릭하면 읽어줘요)</h3>
-      <div class="example-list" id="example-list"></div>
-    </div>
+      <!-- 강조된 힌트 -->
+      <div class="must-words-hint">
+        🎯 <b>이 단어를 꼭 사용해보세요!</b>
+        <span class="must-word">변</span>
+        <span class="must-word">꼭짓점</span>
+      </div>
 
-    <div class="record-box">
-      <textarea class="stt-text" id="stt-stage5" placeholder="🎤 변과 꼭짓점이라는 단어를 사용해 설명해보세요!"></textarea>
+      <textarea class="stt-text tts-text" id="stt-stage5" placeholder="🎤 변과 꼭짓점이라는 단어를 사용해 설명해보세요!"></textarea>
       <div class="recording-controls">
         <button class="mic-btn" id="mic-stage5">🔴 녹음 시작</button>
         <button class="play-btn" id="play-stage5" disabled>▶️ 다시 듣기</button>
+        <button class="hint-btn" id="hint-stage5">💡 힌트 보기</button>
+      </div>
+      <div id="hint-stage5-box" class="hint-box" style="display:none;">
+        <p>💡 <b>이렇게 말해보세요!</b></p>
+        <p>"원은 <b>변</b>과 <b>꼭짓점</b>이 하나도 없어요."</p>
+        <p>"삼각형은 <b>변</b>이 3개, <b>꼭짓점</b>이 3개 있어요."</p>
+        <p>"사각형은 <b>변</b>이 4개, <b>꼭짓점</b>이 4개 있어요."</p>
       </div>
     </div>
-    <div style="margin-top:15px; display:flex; gap:10px;">
+
+    <div class="example-card" id="example-card" style="margin-top:12px;">
+      <h3>📖 예시 문장 (클릭하면 읽어줘요)</h3>
+      <div class="example-list" id="example-list"></div>
+    </div>
+
+    <div style="margin-top:12px; display:flex; gap:10px;">
       <button class="btn btn-yellow" id="hide-example" style="display:none;">예시 가리고 다시 도전! 🎯</button>
       <button class="btn" id="next-stage5" style="display:none;">평가하러 가기 ➡️</button>
     </div>
@@ -994,6 +1082,24 @@ setupRecording(1);
 setupRecording(2);
 setupRecording(5);
 
+// --- 힌트 버튼 토글 ---
+['stage1','stage2','stage5'].forEach(s => {
+  const btn = document.getElementById(`hint-${s}`);
+  const box = document.getElementById(`hint-${s}-box`);
+  if (btn && box) {
+    btn.addEventListener('click', () => {
+      const willShow = box.style.display === 'none';
+      box.style.display = willShow ? 'block' : 'none';
+      btn.classList.toggle('active', willShow);
+      btn.innerHTML = willShow ? '💡 힌트 숨기기' : '💡 힌트 보기';
+      if (willShow && isSpeakerOn) {
+        speak(box.innerText.replace(/\n/g,' '));
+      }
+      playClick();
+    });
+  }
+});
+
 // --- Concept Slides ---
 const conceptData = [
   {
@@ -1015,19 +1121,34 @@ const conceptData = [
 
 function renderConceptSlide(idx) {
   const container = document.getElementById('concept-slides');
+  // 기존 슬라이드 모두 제거 (한 번에 하나만 보이도록)
+  container.innerHTML = '';
   const c = conceptData[idx];
-  container.innerHTML = `
-    <div class="concept-card-big ${c.cls}">
-      <div class="concept-shape-big ${c.cls}"></div>
-      <h3>${c.name}</h3>
-      <p>${c.body}</p>
-    </div>`;
+  const card = document.createElement('div');
+  card.className = `concept-card-big ${c.cls}`;
+  card.innerHTML = `
+    <div class="concept-shape-big ${c.cls}"></div>
+    <h3>${c.name}</h3>
+    <p>${c.body}</p>
+  `;
+  container.appendChild(card);
+
+  // dot 갱신
   document.querySelectorAll('.slide-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+
+  // 카운터 갱신
+  const counter = document.getElementById('slide-counter');
+  if (counter) counter.innerText = `${idx + 1} / ${conceptData.length}`;
+
   if (isSpeakerOn) {
     const tmp = document.createElement('div'); tmp.innerHTML = c.body;
     speak(`${c.name}. ${tmp.innerText}`);
   }
+
+  // 이전 버튼 표시
   document.getElementById('concept-prev').style.visibility = idx === 0 ? 'hidden' : 'visible';
+
+  // 다음 버튼 / 연습 문제 버튼
   if (idx === conceptData.length - 1) {
     document.getElementById('concept-next').style.visibility = 'hidden';
     document.getElementById('next-concept').style.display = 'inline-flex';
@@ -1194,7 +1315,7 @@ document.getElementById('btn-quiz-next').onclick = () => {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  const showReminder = !['screen-start','screen-stage1','screen-concept','screen-end'].includes(id);
+  const showReminder = !['screen-start','screen-stage1','screen-end'].includes(id);
   document.getElementById('concept-reminder').classList.toggle('show', showReminder);
   playTTSForActive(id);
 
