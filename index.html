@@ -4,20 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>다함께 도형 탐험대</title>
-<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 <style>
   :root {
     --primary: #ff6b6b;
     --secondary: #4ecdc4;
     --accent: #feca57;
-    --circle-color: #f9ca24;
-    --triangle-color: #4a90e2;
-    --square-color: #eb4d4b;
+    --circle-color: #f9ca24;     /* 원: 노랑 */
+    --circle-bg: #fff8dc;
+    --triangle-color: #4a90e2;   /* 삼각형: 파랑 */
+    --triangle-bg: #e3f2fd;
+    --square-color: #eb4d4b;     /* 사각형: 빨강 */
+    --square-bg: #ffebee;
     --text: #2d3436;
-    --glass-bg: rgba(255,255,255,0.75);
-    --glass-border: rgba(255,255,255,0.6);
   }
-  * { box-sizing:border-box; user-select:none; -webkit-user-select:none; font-family:'Jua','Gaegu',sans-serif; }
+  * { box-sizing:border-box; user-select:none; -webkit-user-select:none; font-family:'Jua',sans-serif; }
   body {
     margin:0; padding:0;
     background: linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);
@@ -30,21 +31,28 @@
     position:relative; transform-origin:center center;
     background:rgba(255,255,255,0.45); backdrop-filter:blur(10px);
     border-radius:30px; box-shadow:0 20px 50px rgba(0,0,0,0.1);
-    border:2px solid var(--glass-border);
+    border:2px solid rgba(255,255,255,0.6);
     display:flex; flex-direction:column; overflow:hidden;
   }
 
+  /* ===== 핵심: 도형 단어 색상 컴포넌트 ===== */
+  .shape-word {
+    display:inline-block; padding:3px 14px; border-radius:10px;
+    font-weight:bold; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    margin:0 3px;
+  }
+  .shape-word.circle   { background:var(--circle-color);   color:#5c4400; }
+  .shape-word.triangle { background:var(--triangle-color); color:white; }
+  .shape-word.square   { background:var(--square-color);   color:white; }
+
   /* ===== Header (Stamp Path) ===== */
   header {
-    height:90px;
-    background:rgba(255,255,255,0.6);
+    height:90px; background:rgba(255,255,255,0.6);
     border-bottom:2px solid rgba(255,255,255,0.8);
     display:flex; justify-content:space-between; align-items:center;
-    padding:0 25px; z-index:10; flex-shrink:0;
+    padding:0 25px; flex-shrink:0;
   }
-  .stamp-path {
-    display:flex; gap:6px; align-items:center; flex:1;
-  }
+  .stamp-path { display:flex; gap:6px; align-items:center; flex:1; }
   .stamp-container {
     display:flex; flex-direction:column; align-items:center; gap:3px;
     position:relative; flex:1;
@@ -68,8 +76,7 @@
     animation:stampPop 0.6s ease;
   }
   .stamp.current {
-    background:var(--primary); opacity:1;
-    box-shadow:0 0 0 5px rgba(255,107,107,0.3);
+    background:var(--primary); opacity:1; color:white;
     animation:currentPulse 1.5s infinite;
   }
   @keyframes stampPop {
@@ -82,54 +89,125 @@
     50% { box-shadow:0 0 0 10px rgba(255,107,107,0.1); }
   }
   .stamp-label { font-size:12px; color:#555; font-weight:bold; white-space:nowrap; }
-  .stamp-container.active .stamp-label { color:var(--primary); font-weight:bold; }
   .header-buttons { display:flex; gap:10px; align-items:center; margin-left:15px; }
-  .speaker-btn, .help-btn {
+  .speaker-btn {
     background:#fff; border:none; width:55px; height:55px; border-radius:50%;
     font-size:26px; cursor:pointer; box-shadow:0 5px 15px rgba(0,0,0,0.1);
-    transition:all 0.2s;
   }
-  .speaker-btn:active, .help-btn:active { transform:scale(0.9); }
   .speaker-btn.on { background:var(--primary); color:white; }
-  .help-btn { background:#feca57; }
-  .help-btn:hover { background:#ffb800; transform:scale(1.05); }
 
-  /* ===== Concept Reminder Bar ===== */
+  /* ===== 1줄 요약 Reminder Bar ===== */
   #concept-reminder {
-    display:none; padding:8px 25px; background:linear-gradient(90deg,#fff8dc,#e3f2fd,#ffebee);
-    border-bottom:3px solid rgba(255,255,255,0.8); flex-shrink:0;
+    display:none; padding:10px 25px;
+    background:linear-gradient(90deg,#fff8dc,#e3f2fd,#ffebee);
+    border-bottom:3px solid white; flex-shrink:0;
   }
-  #concept-reminder.show { display:flex; gap:15px; justify-content:center; flex-wrap:wrap; align-items:center; }
+  #concept-reminder.show {
+    display:flex; gap:12px; justify-content:center;
+    flex-wrap:wrap; align-items:center;
+  }
   .reminder-chip {
-    padding:6px 16px; border-radius:20px; color:white; font-size:18px;
-    font-weight:bold; box-shadow:0 3px 8px rgba(0,0,0,0.15);
+    padding:8px 18px; border-radius:25px; font-size:18px;
+    font-weight:bold; box-shadow:0 3px 10px rgba(0,0,0,0.15);
+    border:2px solid white;
+  }
+  .reminder-chip.circle   { background:var(--circle-color);   color:#5c4400; }
+  .reminder-chip.triangle { background:var(--triangle-color); color:white; }
+  .reminder-chip.square   { background:var(--square-color);   color:white; }
+
+  /* ===== Screens ===== */
+  .screen {
+    flex:1; display:none; flex-direction:column; align-items:center;
+    justify-content:flex-start; padding:20px 35px;
+    animation:fadeIn 0.5s ease; overflow-y:auto;
+  }
+  .screen.active { display:flex; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+  @keyframes pop { 0%{transform:scale(0);} 60%{transform:scale(1.2);} 100%{transform:scale(1);} }
+
+  h1 { font-size:54px; color:var(--primary); text-shadow:2px 2px 4px rgba(255,255,255,0.8); margin:10px 0; text-align:center; }
+  .subtitle { font-size:24px; color:#666; margin-bottom:20px; }
+  .small-help { font-size:18px; color:#666; word-break:keep-all; text-align:center; }
+
+  /* ===== Buttons ===== */
+  .btn {
+    padding:14px 36px; font-size:26px; border:none; border-radius:50px;
+    background:var(--secondary); color:white; cursor:pointer;
+    box-shadow:0 8px 18px rgba(78,205,196,0.3);
+    transition:all 0.2s; display:inline-flex; align-items:center; gap:10px;
+    font-family:'Jua',sans-serif;
+  }
+  .btn:hover { transform:translateY(-3px); }
+  .btn:active { transform:translateY(2px); }
+  .btn-red    { background:var(--primary); box-shadow:0 8px 18px rgba(255,107,107,0.3); }
+  .btn-yellow { background:var(--accent); color:#333; box-shadow:0 8px 18px rgba(254,202,87,0.3); }
+
+  /* ===== Title Block (처음/나중/관찰하기 화면 위에 떠있는 큰 제목) ===== */
+  .title-block {
+    width:100%; max-width:1000px; margin:0 0 15px 0;
+    background:white; border-radius:18px; padding:18px 25px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    text-align:center; font-size:30px; font-weight:bold; color:#333;
+    line-height:1.5; word-break:keep-all;
   }
 
-  /* ===== Hint Button & Hint Box ===== */
+  /* ===== Recording Box ===== */
+  .record-box {
+    width:100%; max-width:1000px; background:rgba(255,255,255,0.85);
+    border-radius:20px; padding:20px 25px; display:flex;
+    flex-direction:column; align-items:center; gap:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05);
+  }
+  textarea.stt-text {
+    width:100%; height:170px; background:white; border-radius:15px;
+    padding:20px; font-size:30px; color:#333; text-align:left;
+    border:3px dashed #ccc; resize:none; outline:none;
+    transition:all 0.3s; user-select:text; -webkit-user-select:text;
+    font-family:'Jua',sans-serif; line-height:1.5; font-weight:bold;
+  }
+  textarea.stt-text:focus { border-color:var(--secondary); }
+  textarea.stt-text.recording { border-color:var(--primary); border-style:solid; box-shadow:0 0 15px rgba(255,107,107,0.3); }
+
+  .recording-controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .mic-btn {
+    padding:14px 28px; border-radius:50px; border:none;
+    background:var(--primary); color:white; font-size:22px; font-weight:bold;
+    cursor:pointer; box-shadow:0 8px 18px rgba(255,107,107,0.4);
+    transition:all 0.3s; display:inline-flex; align-items:center; gap:8px;
+    font-family:'Jua',sans-serif;
+  }
+  .mic-btn.recording { animation:pulse 1.5s infinite; background:#c23616; }
+  @keyframes pulse {
+    0%   { transform:scale(1); box-shadow:0 0 0 0 rgba(255,107,107,0.7); }
+    70%  { transform:scale(1.08); box-shadow:0 0 0 18px rgba(255,107,107,0); }
+    100% { transform:scale(1); box-shadow:0 0 0 0 rgba(255,107,107,0); }
+  }
+  .play-btn { background:#4a90e2; color:white; padding:14px 24px; font-size:20px; border:none; border-radius:50px; cursor:pointer; font-family:'Jua',sans-serif; }
+  .play-btn:disabled { background:#bbb; cursor:not-allowed; }
   .hint-btn {
     padding:14px 24px; border-radius:50px; border:none;
     background:#feca57; color:#333; font-size:20px; font-weight:bold;
     cursor:pointer; box-shadow:0 6px 14px rgba(254,202,87,0.4);
-    transition:all 0.2s;
+    transition:all 0.2s; font-family:'Jua',sans-serif;
   }
-  .hint-btn:hover { transform:translateY(-2px); background:#ffb800; }
-  .hint-btn:active { transform:translateY(1px); }
-  .hint-btn.active { background:#ff9f43; }
+  .hint-btn:hover { background:#ffb800; }
+  .hint-btn.active { background:#ff9f43; color:white; }
   .hint-box {
     width:100%; background:#fffacd; border:3px dashed #f9ca24;
-    border-radius:15px; padding:15px 22px; margin-top:10px;
+    border-radius:15px; padding:14px 20px; margin-top:10px;
     animation:fadeIn 0.4s ease;
   }
-  .hint-box p { margin:6px 0; font-size:20px; color:#444; line-height:1.5; }
-  .hint-box p:first-child { color:#e67e22; font-size:22px; }
+  .hint-box p { margin:5px 0; font-size:20px; color:#444; line-height:1.5; }
+  .hint-box p:first-child { color:#e67e22; font-size:22px; font-weight:bold; }
 
-  /* ===== Must-words hint (변, 꼭짓점 강조) ===== */
+  /* 변·꼭짓점 강조 배너 */
   .must-words-hint {
     width:100%; background:linear-gradient(135deg,#ffe066,#ffd43b);
     border:3px solid #fcc419; border-radius:15px;
-    padding:12px 20px; margin-bottom:12px;
+    padding:14px 20px; margin-bottom:12px;
     font-size:22px; font-weight:bold; color:#5c4400;
-    text-align:center; display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap;
+    text-align:center; display:flex; gap:10px;
+    justify-content:center; align-items:center; flex-wrap:wrap;
     box-shadow:0 5px 15px rgba(252,196,25,0.3);
   }
   .must-word {
@@ -142,83 +220,20 @@
     50% { transform:scale(1.05); }
   }
 
-  /* ===== Screens ===== */
-  .screen {
-    flex:1; display:none; flex-direction:column; align-items:center;
-    justify-content:flex-start; padding:25px 40px;
-    animation:fadeIn 0.5s ease; overflow-y:auto;
-  }
-  .screen.active { display:flex; }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
-  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
-  @keyframes pop { 0%{transform:scale(0);} 60%{transform:scale(1.2);} 100%{transform:scale(1);} }
-
-  h1 { font-size:54px; color:var(--primary); text-shadow:2px 2px 4px rgba(255,255,255,0.8); margin:10px 0; text-align:center; }
-  h2 { font-size:34px; color:#333; margin:0 0 18px 0; text-align:center; line-height:1.3; word-break:keep-all; }
-  .subtitle { font-size:24px; color:#666; margin-bottom:25px; }
-  .small-help { font-size:18px; color:#666; word-break:keep-all; }
-
-  /* ===== Buttons ===== */
-  .btn {
-    padding:14px 36px; font-size:26px; border:none; border-radius:50px;
-    background:var(--secondary); color:white; cursor:pointer;
-    box-shadow:0 8px 18px rgba(78,205,196,0.3);
-    transition:all 0.2s; display:inline-flex; align-items:center; justify-content:center; gap:10px;
-  }
-  .btn:hover { transform:translateY(-3px); box-shadow:0 12px 22px rgba(78,205,196,0.4); }
-  .btn:active { transform:translateY(2px); }
-  .btn-red    { background:var(--primary); box-shadow:0 8px 18px rgba(255,107,107,0.3); }
-  .btn-yellow { background:var(--accent); color:#333; box-shadow:0 8px 18px rgba(254,202,87,0.3); }
-  .btn-blue   { background:#4a90e2; box-shadow:0 8px 18px rgba(74,144,226,0.3); }
-
-  /* ===== Recording Box ===== */
-  .record-box {
-    width:100%; max-width:900px; background:var(--glass-bg);
-    border-radius:20px; padding:20px 25px; display:flex;
-    flex-direction:column; align-items:center; gap:12px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.05);
-  }
-  textarea.stt-text {
-    width:100%; height:160px; background:white; border-radius:15px;
-    padding:20px; font-size:30px; color:#333; text-align:left;
-    border:3px dashed #ccc; resize:none; outline:none;
-    transition:all 0.3s; user-select:text; -webkit-user-select:text;
-    font-family:'Jua',sans-serif; line-height:1.5; font-weight:bold;
-  }
-  textarea.stt-text:focus { border-color:var(--secondary); box-shadow:0 0 15px rgba(78,205,196,0.3); }
-  textarea.stt-text.recording { border-color:var(--primary); border-style:solid; box-shadow:0 0 15px rgba(255,107,107,0.3); }
-
-  .recording-controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-  .mic-btn {
-    padding:14px 28px; border-radius:50px; border:none;
-    background:var(--primary); color:white; font-size:22px; font-weight:bold;
-    cursor:pointer; box-shadow:0 8px 18px rgba(255,107,107,0.4);
-    transition:all 0.3s; display:inline-flex; align-items:center; gap:8px;
-  }
-  .mic-btn.recording { animation:pulse 1.5s infinite; background:#c23616; }
-  @keyframes pulse {
-    0%   { transform:scale(1); box-shadow:0 0 0 0 rgba(255,107,107,0.7); }
-    70%  { transform:scale(1.08); box-shadow:0 0 0 18px rgba(255,107,107,0); }
-    100% { transform:scale(1); box-shadow:0 0 0 0 rgba(255,107,107,0); }
-  }
-  .play-btn { background:#4a90e2; color:white; padding:14px 24px; font-size:20px; border:none; border-radius:50px; cursor:pointer; }
-  .play-btn:disabled { background:#bbb; cursor:not-allowed; }
-  .help-tip { font-size:16px; color:#666; margin-top:5px; }
-
-  /* ===== Example sentences ===== */
+  /* ===== Examples ===== */
   .example-card {
-    width:100%; max-width:900px; background:#fffacd; border-radius:18px;
-    padding:18px 24px; margin-bottom:15px; border:2px dashed #f9ca24;
+    width:100%; max-width:1000px; background:#fffacd; border-radius:18px;
+    padding:15px 22px; margin-top:10px; border:2px dashed #f9ca24;
   }
-  .example-card h3 { margin:0 0 10px 0; color:#e67e22; font-size:22px; }
-  .example-list { display:flex; flex-direction:column; gap:8px; }
+  .example-card h3 { margin:0 0 10px 0; color:#e67e22; font-size:20px; }
+  .example-list { display:flex; flex-direction:column; gap:6px; }
   .example-item {
-    background:white; padding:10px 16px; border-radius:12px; font-size:20px;
-    color:#333; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:10px;
+    background:white; padding:9px 14px; border-radius:10px; font-size:18px;
+    color:#333; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:8px;
   }
-  .example-item:hover { transform:translateX(5px); box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+  .example-item:hover { transform:translateX(5px); }
 
-  /* ===== Student select ===== */
+  /* ===== Start screen ===== */
   #student-select {
     font-size:26px; padding:14px 24px; border-radius:15px; border:3px solid #4ecdc4;
     margin-bottom:20px; min-width:280px; background:white; cursor:pointer; font-family:'Jua',sans-serif;
@@ -230,79 +245,101 @@
   }
   .qty-btn.active { border-color:var(--primary); background:var(--primary); color:white; }
 
-  /* ===== Concept Cards ===== */
-  .concept-slide-container {
-    width:100%; max-width:1000px; flex:1; display:flex;
-    flex-direction:column; align-items:center; justify-content:center;
+  /* ===== 개념 학습 팝업 ===== */
+  #concept-popup-bg {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.5); z-index:200; display:none;
+    justify-content:center; align-items:center;
+    animation:fadeIn 0.3s ease;
   }
-  .concept-card-big {
-    width:100%; padding:40px 50px; border-radius:30px; text-align:center;
-    box-shadow:0 20px 50px rgba(0,0,0,0.15); margin-bottom:18px; color:white;
-    animation:pop 0.5s ease;
+  #concept-popup-bg.show { display:flex; }
+  .concept-popup {
+    width:700px; max-width:90%; padding:40px 50px; border-radius:30px;
+    text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.4);
+    color:white; animation:pop 0.5s ease;
     border:6px solid white;
   }
-  .concept-card-big.circle   { background:linear-gradient(135deg,#ffe066,#fcc419,#f59f00); }
-  .concept-card-big.triangle { background:linear-gradient(135deg,#74c0fc,#4a90e2,#1864ab); }
-  .concept-card-big.square   { background:linear-gradient(135deg,#ff8787,#eb4d4b,#c0392b); }
-  .concept-shape-big {
+  .concept-popup.circle   { background:linear-gradient(135deg,#ffe066,#fcc419,#f59f00); }
+  .concept-popup.triangle { background:linear-gradient(135deg,#74c0fc,#4a90e2,#1864ab); }
+  .concept-popup.square   { background:linear-gradient(135deg,#ff8787,#eb4d4b,#c0392b); }
+
+  .popup-shape {
     width:140px; height:140px; margin:0 auto 18px auto;
     filter:drop-shadow(0 8px 20px rgba(0,0,0,0.3));
   }
-  .concept-shape-big.circle   { background:white; border-radius:50%; }
-  .concept-shape-big.square   { background:white; }
-  .concept-shape-big.triangle {
-    background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,5 5,95 95,95" fill="white"/></svg>');
+  .popup-shape.circle   { background:white; border-radius:50%; }
+  .popup-shape.square   { background:white; }
+  .popup-shape.triangle {
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,5 5,95 95,95' fill='white'/></svg>");
     background-size:contain; background-repeat:no-repeat; background-position:center;
   }
-  .concept-card-big h3 {
-    font-size:50px; margin:0 0 15px 0;
-    text-shadow:2px 2px 4px rgba(0,0,0,0.2);
-    background:white; color:#333; display:inline-block;
+  .concept-popup h3 {
+    font-size:50px; margin:0 0 18px 0;
+    background:white; display:inline-block;
     padding:8px 30px; border-radius:50px;
+    text-shadow:none;
   }
-  .concept-card-big.circle h3 { color:#f59f00; }
-  .concept-card-big.triangle h3 { color:#1864ab; }
-  .concept-card-big.square h3 { color:#c0392b; }
-  .concept-card-big p { font-size:26px; line-height:1.6; margin:8px 0; word-break:keep-all; font-weight:bold; }
-  .concept-card-big p b {
+  .concept-popup.circle h3   { color:#f59f00; }
+  .concept-popup.triangle h3 { color:#1864ab; }
+  .concept-popup.square h3   { color:#c0392b; }
+  .concept-popup p {
+    font-size:24px; line-height:1.6; margin:8px 0;
+    word-break:keep-all; font-weight:bold;
+  }
+  .concept-popup p b {
     background:rgba(255,255,255,0.3); padding:2px 12px; border-radius:8px;
     display:inline-block;
   }
-
-  .slide-nav { display:flex; gap:15px; align-items:center; }
-  .slide-dot { width:18px; height:18px; border-radius:50%; background:#ccc; transition:all 0.3s; opacity:0.4; border:2px solid white; }
-  .slide-dot.active { transform:scale(1.5); opacity:1; box-shadow:0 0 0 4px rgba(255,255,255,0.6), 0 4px 10px rgba(0,0,0,0.2); }
+  .popup-counter {
+    display:inline-block; background:white; color:#333;
+    padding:5px 18px; border-radius:30px; font-size:20px;
+    font-weight:bold; margin-bottom:15px;
+  }
+  .popup-nav {
+    display:flex; gap:12px; justify-content:center;
+    align-items:center; margin-top:20px;
+  }
+  .popup-nav .btn { font-size:22px; padding:12px 28px; }
 
   /* ===== Practice ===== */
   .practice-area {
     width:100%; max-width:900px; background:white; border-radius:20px;
     padding:25px; box-shadow:0 10px 30px rgba(0,0,0,0.08);
   }
-  .practice-row { display:flex; gap:20px; align-items:center; margin-bottom:18px; padding:15px; background:#f8f9fa; border-radius:15px; }
+  .practice-row {
+    display:flex; gap:18px; align-items:center; margin-bottom:15px;
+    padding:14px; background:#f8f9fa; border-radius:15px;
+  }
   .practice-row.correct { background:#d4edda; }
   .practice-row.wrong { background:#f8d7da; animation:shake 0.4s; }
-  @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-8px);} 75%{transform:translateX(8px);} }
+  @keyframes shake {
+    0%,100% { transform:translateX(0); }
+    25% { transform:translateX(-8px); }
+    75% { transform:translateX(8px); }
+  }
   .practice-img { font-size:50px; flex-shrink:0; }
   .practice-text { flex:1; font-size:22px; color:#333; }
   .practice-zones { display:flex; gap:8px; }
   .drop-zone {
     padding:10px 16px; border-radius:30px; border:3px dashed #aaa;
-    font-size:18px; cursor:pointer; background:white; min-width:80px; text-align:center;
-    transition:all 0.2s; font-family:'Jua',sans-serif;
+    font-size:18px; cursor:pointer; background:white; min-width:80px;
+    text-align:center; transition:all 0.2s; font-family:'Jua',sans-serif;
+    font-weight:bold;
   }
   .drop-zone:hover { transform:scale(1.05); }
   .drop-zone.selected { border-style:solid; }
-  .drop-zone.zone-circle.selected   { background:var(--circle-color);   color:white; border-color:var(--circle-color); }
+  .drop-zone.zone-circle.selected   { background:var(--circle-color);   color:#5c4400; border-color:var(--circle-color); }
   .drop-zone.zone-triangle.selected { background:var(--triangle-color); color:white; border-color:var(--triangle-color); }
   .drop-zone.zone-square.selected   { background:var(--square-color);   color:white; border-color:var(--square-color); }
 
   /* ===== Quiz ===== */
   #quiz-box { max-width:1000px; padding:30px; flex:1; display:flex; flex-direction:column; justify-content:center; }
   #quiz-img { font-size:130px; margin-bottom:8px; animation:bounce 2s infinite; }
-  #quiz-q { font-size:38px; margin-bottom:25px; }
+  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
+  #quiz-q { font-size:38px; margin-bottom:25px; font-weight:bold; text-align:center; }
   #quiz-options { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; }
   #quiz-options .btn { font-size:32px; padding:16px 50px; border-radius:50px; }
-  #quiz-progress { font-size:24px; padding:10px 22px; border-radius:20px; background:var(--accent); color:#333; box-shadow:none; }
+  #quiz-progress { font-size:24px; padding:10px 22px; border-radius:20px; background:var(--accent); color:#333; }
   #quiz-fb-icon { font-size:100px; }
   #quiz-fb-title { font-size:46px; }
   #quiz-fb-msg { font-size:26px; }
@@ -311,63 +348,49 @@
   /* ===== Reflect ===== */
   .reflect-card {
     width:100%; max-width:900px; background:white; border-radius:20px;
-    padding:25px 30px; box-shadow:0 10px 30px rgba(0,0,0,0.08); margin-bottom:15px;
+    padding:22px 28px; box-shadow:0 10px 30px rgba(0,0,0,0.08); margin-bottom:12px;
   }
-  .reflect-q { font-size:22px; color:#333; margin-bottom:12px; font-weight:bold; }
-  .emoji-row { display:flex; gap:12px; flex-wrap:wrap; }
+  .reflect-q { font-size:22px; color:#333; margin-bottom:10px; font-weight:bold; }
+  .emoji-row { display:flex; gap:10px; flex-wrap:wrap; }
   .emoji-choice {
-    padding:14px 22px; font-size:22px; border-radius:18px; border:3px solid #ddd;
+    padding:12px 20px; font-size:20px; border-radius:18px; border:3px solid #ddd;
     background:white; cursor:pointer; transition:all 0.2s; font-family:'Jua',sans-serif;
   }
   .emoji-choice:hover { transform:scale(1.05); }
   .emoji-choice.selected { border-color:var(--primary); background:#ffebee; }
 
-  /* ===== Self Eval (비교 성찰) ===== */
-  .compare-box {
-    display:flex; gap:20px; width:100%; max-width:1100px; margin-bottom:20px;
-    align-items:stretch;
-  }
+  /* ===== Self Eval ===== */
+  .compare-box { display:flex; gap:18px; width:100%; max-width:1100px; margin-bottom:18px; align-items:stretch; }
   .compare-card {
-    flex:1; background:white; padding:20px; border-radius:20px;
+    flex:1; background:white; padding:18px; border-radius:20px;
     box-shadow:0 10px 20px rgba(0,0,0,0.05); text-align:center; border:3px solid #eee;
   }
-  .compare-card.before { border-color:#a8dadc; background:linear-gradient(135deg,#f0f8ff,#ffffff); }
-  .compare-card.after  { border-color:var(--primary); background:linear-gradient(135deg,#fff5f5,#ffffff); }
+  .compare-card.before { border-color:#a8dadc; }
+  .compare-card.after  { border-color:var(--primary); }
   .compare-card h3 { margin:0 0 10px 0; font-size:24px; }
   .compare-card.before h3 { color:#457b9d; }
   .compare-card.after h3 { color:var(--primary); }
   .stt-preview { color:#444; font-size:19px; margin:8px 0; min-height:40px; padding:12px; background:#f8f9fa; border-radius:10px; line-height:1.4; text-align:left; }
-  audio { width:100%; margin-top:10px; outline:none; }
-  .compare-arrow {
-    display:flex; align-items:center; justify-content:center;
-    font-size:48px; color:var(--accent);
-  }
+  audio { width:100%; margin-top:8px; outline:none; }
+  .compare-arrow { display:flex; align-items:center; justify-content:center; font-size:48px; color:var(--accent); }
 
   .reflect-prompt {
     width:100%; max-width:1000px; background:#fffde7; border:3px dashed #f9ca24;
-    padding:18px 24px; border-radius:18px; margin-bottom:18px;
+    padding:15px 22px; border-radius:18px; margin-bottom:15px;
   }
-  .reflect-prompt h3 { margin:0 0 10px 0; color:#e67e22; font-size:22px; }
+  .reflect-prompt h3 { margin:0 0 8px 0; color:#e67e22; font-size:22px; }
   .reflect-prompt p { font-size:19px; color:#555; margin:5px 0; line-height:1.5; }
 
-  .stars {
-    display:flex; gap:12px; font-size:60px; color:#ddd; cursor:pointer; margin:15px 0;
-  }
-  .star:hover, .star.active { color:var(--accent); text-shadow:0 0 10px rgba(254,202,87,0.5); animation:starPop 0.3s ease; }
-  @keyframes starPop {
-    0% { transform:scale(1); }
-    50% { transform:scale(1.3) rotate(15deg); }
-    100% { transform:scale(1); }
-  }
+  .stars { display:flex; gap:12px; font-size:60px; color:#ddd; cursor:pointer; margin:12px 0; }
+  .star:hover, .star.active { color:var(--accent); text-shadow:0 0 10px rgba(254,202,87,0.5); }
 
-  /* ===== Sticker board ===== */
   .sticker-board {
     display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
-    background:#fff8e1; padding:15px; border-radius:15px; margin:10px 0;
-    min-height:60px; width:100%; max-width:900px;
+    background:#fff8e1; padding:12px; border-radius:15px; margin:8px 0;
+    width:100%; max-width:900px;
   }
   .sticker-choice {
-    font-size:36px; cursor:pointer; padding:8px 12px; border-radius:12px;
+    font-size:36px; cursor:pointer; padding:6px 10px; border-radius:12px;
     transition:all 0.2s; background:white; box-shadow:0 3px 8px rgba(0,0,0,0.05);
   }
   .sticker-choice:hover { transform:scale(1.15); }
@@ -377,7 +400,7 @@
   #loading {
     position:fixed; top:0; left:0; width:100%; height:100%;
     background:rgba(255,255,255,0.85); backdrop-filter:blur(5px);
-    display:none; flex-direction:column; justify-content:center; align-items:center; z-index:200;
+    display:none; flex-direction:column; justify-content:center; align-items:center; z-index:300;
   }
   .spinner { width:80px; height:80px; border:10px solid #f3f3f3; border-top:10px solid var(--primary); border-radius:50%; animation:spin 1s linear infinite; }
   @keyframes spin { 0%{transform:rotate(0);} 100%{transform:rotate(360deg);} }
@@ -385,25 +408,24 @@
   /* ===== Confetti ===== */
   #reward-overlay {
     position:fixed; top:0; left:0; width:100%; height:100%;
-    pointer-events:none; z-index:300; display:none;
+    pointer-events:none; z-index:400; display:none;
   }
   .confetti {
     position:absolute; font-size:32px; animation:fall 2.5s ease-out forwards;
   }
   @keyframes fall {
-    0%   { transform:translateY(-50px) rotate(0); opacity:1; }
+    0% { transform:translateY(-50px) rotate(0); opacity:1; }
     100% { transform:translateY(100vh) rotate(720deg); opacity:0; }
   }
 
-  /* ===== Stamp Award (학습 칭찬 도장) ===== */
+  /* ===== Stamp Award ===== */
   .stamp-award {
     position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(0);
-    z-index:350; pointer-events:none; opacity:0;
+    z-index:500; pointer-events:none; opacity:0;
     transition:all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
   }
   .stamp-award.show {
-    transform:translate(-50%,-50%) scale(1) rotate(-12deg);
-    opacity:1;
+    transform:translate(-50%,-50%) scale(1) rotate(-12deg); opacity:1;
   }
   .stamp-award-inner {
     background:radial-gradient(circle,#ff6b6b,#c0392b);
@@ -413,29 +435,17 @@
   }
   .stamp-award-inner .icon { font-size:60px; display:block; margin-bottom:5px; }
 
-  /* ===== Help Modal ===== */
-  .modal-bg {
-    position:fixed; top:0; left:0; width:100%; height:100%;
-    background:rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center; z-index:250;
-  }
-  .modal-bg.show { display:flex; }
-  .modal-content {
-    background:white; border-radius:25px; padding:30px; max-width:600px; width:90%;
-    max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);
-  }
-  .modal-content h2 { color:var(--primary); margin-top:0; }
-  .modal-close { float:right; background:#eee; border:none; width:40px; height:40px; border-radius:50%; font-size:20px; cursor:pointer; }
-
-  /* ===== Center popup ===== */
+  /* ===== Center popup (다시 풀기 안내) ===== */
   .center-popup {
     position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    background:white; border-radius:25px; padding:30px 40px; box-shadow:0 20px 60px rgba(0,0,0,0.25);
-    max-width:500px; text-align:center; z-index:150; animation:pop 0.4s ease;
-    border:4px solid var(--accent);
+    background:white; border-radius:25px; padding:30px 40px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.25);
+    max-width:500px; text-align:center; z-index:250;
+    animation:pop 0.4s ease; border:4px solid var(--accent);
   }
   .center-popup h2 { font-size:32px; color:var(--primary); margin-top:0; }
   .center-popup p { font-size:22px; color:#555; line-height:1.5; }
-  .popup-bg { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:140; display:none; }
+  .popup-bg { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:240; display:none; }
   .popup-bg.show { display:block; }
 </style>
 </head>
@@ -453,19 +463,19 @@
       <div class="stamp-container" data-step="6"><div class="stamp" id="stamp6">6</div><div class="stamp-label">자기 평가</div></div>
     </div>
     <div class="header-buttons">
-      <button class="help-btn" id="help-btn" title="도움받기">💡</button>
       <button class="speaker-btn" id="speaker-toggle">🔈</button>
     </div>
   </header>
 
+  <!-- 1줄 요약 (개념 학습 후 항상 표시) -->
   <div id="concept-reminder">
-    <div class="reminder-chip" style="background:var(--circle-color); color:#333;">⚪ 원: 변·꼭짓점 없음</div>
-    <div class="reminder-chip" style="background:var(--triangle-color);">🔺 삼각형: 변 3, 꼭짓점 3</div>
-    <div class="reminder-chip" style="background:var(--square-color);">🟥 사각형: 변 4, 꼭짓점 4</div>
+    <div class="reminder-chip circle">⚪ 원: 변·꼭짓점 없음</div>
+    <div class="reminder-chip triangle">🔺 삼각형: 변 3, 꼭짓점 3</div>
+    <div class="reminder-chip square">🟥 사각형: 변 4, 꼭짓점 4</div>
   </div>
 
   <!-- Stage 0: Start -->
-  <div id="screen-start" class="screen active">
+  <div id="screen-start" class="screen active" style="justify-content:center; align-items:center;">
     <h1>🎨 다함께 도형 탐험대 🔍</h1>
     <p class="subtitle">처음 생각과 나중 생각을 비교해보아요!</p>
 
@@ -484,79 +494,74 @@
 
   <!-- Stage 1: 처음 생각 -->
   <div id="screen-stage1" class="screen">
-    <div class="record-box" style="margin-top:0;">
-      <div style="width:100%; text-align:center; margin-bottom:10px;">
-        <div style="font-size:30px; color:#333; font-weight:bold;">
-          🌱 자신이 알고 있는 <span style="color:var(--circle-color); background:#fff8dc; padding:2px 10px; border-radius:8px;">원</span> <span style="color:var(--triangle-color); background:#e3f2fd; padding:2px 10px; border-radius:8px;">삼각형</span> <span style="color:var(--square-color); background:#ffebee; padding:2px 10px; border-radius:8px;">사각형</span>에 대해 얘기해볼까요?
-        </div>
-      </div>
-      <textarea class="stt-text tts-text" id="stt-stage1" placeholder="🎤 마이크 버튼을 누르거나 키보드로 직접 써도 돼요!"></textarea>
+    <div class="title-block">
+      🌱 자신이 알고 있는
+      <span class="shape-word circle">원</span>
+      <span class="shape-word triangle">삼각형</span>
+      <span class="shape-word square">사각형</span>
+      에 대해 얘기해볼까요?
+    </div>
+
+    <div class="record-box">
+      <textarea class="stt-text" id="stt-stage1" placeholder="🎤 마이크 버튼을 누르거나 키보드로 직접 써도 돼요!"></textarea>
       <div class="recording-controls">
         <button class="mic-btn" id="mic-stage1">🔴 녹음 시작</button>
         <button class="play-btn" id="play-stage1" disabled>▶️ 다시 듣기</button>
         <button class="hint-btn" id="hint-stage1">💡 힌트 보기</button>
       </div>
       <div id="hint-stage1-box" class="hint-box" style="display:none;">
-        <p>💡 <b>이렇게 말해보세요!</b></p>
-        <p>"동그란 모양은 원이에요."</p>
+        <p>💡 이렇게 말해보세요!</p>
+        <p>"동그란 모양은 <span class="shape-word circle" style="font-size:18px;">원</span>이에요."</p>
         <p>"세모는 뾰족한 곳이 있어요."</p>
         <p>"네모는 곧은 선 4개로 되어 있어요."</p>
       </div>
     </div>
-    <p class="small-help" style="margin-top:15px;">💭 모양이 어떻게 생겼는지, 어디에서 봤는지 자유롭게 말해도 돼요!</p>
-    <div style="margin-top:18px;">
+    <p class="small-help" style="margin-top:12px;">💭 모양이 어떻게 생겼는지, 어디에서 봤는지 자유롭게 말해도 돼요!</p>
+    <div style="margin-top:15px;">
       <button class="btn" id="next-stage1" style="display:none;">다음으로 ➡️</button>
     </div>
   </div>
 
-  <!-- Stage 2: 개념 학습 -->
-  <div id="screen-concept" class="screen">
-    <h2 class="tts-text" id="concept-title">📚 도형 친구를 한 명씩 만나볼까요? <span id="slide-counter" style="color:var(--primary); background:white; padding:4px 16px; border-radius:30px; font-size:24px; margin-left:10px;">1 / 3</span></h2>
-
-    <div class="concept-slide-container" id="concept-slides"></div>
-
-    <div class="slide-nav" style="margin-top:8px;">
-      <button class="btn btn-yellow" id="concept-prev" style="font-size:22px; padding:10px 20px;">⬅️ 이전</button>
-      <div class="slide-dot" data-idx="0" style="background:var(--circle-color);"></div>
-      <div class="slide-dot" data-idx="1" style="background:var(--triangle-color);"></div>
-      <div class="slide-dot" data-idx="2" style="background:var(--square-color);"></div>
-      <button class="btn btn-yellow" id="concept-next" style="font-size:22px; padding:10px 20px;">다음 ➡️</button>
-    </div>
-
-    <button class="btn btn-red" id="next-concept" style="display:none; margin-top:15px;">연습 문제 풀러가기 🚀</button>
+  <!-- Stage 2: 개념 학습 (팝업 진입 화면) -->
+  <div id="screen-concept" class="screen" style="justify-content:center; align-items:center;">
+    <h1 style="font-size:42px;">📚 도형 친구를 만나볼까요?</h1>
+    <p class="subtitle">3명의 도형 친구가 차례로 인사할 거예요!</p>
+    <button class="btn btn-red" id="open-concept-popup">친구들 만나기 🚀</button>
   </div>
 
   <!-- Stage 2.5: 연습 -->
   <div id="screen-practice" class="screen">
-    <h2 class="tts-text">알맞은 도형 친구를 찾아 클릭해 보세요!</h2>
-    <p class="small-help">❌ 틀려도 괜찮아요! 다시 시도하면 새로운 색이 나타나요</p>
+    <div class="title-block">알맞은 도형 친구를 찾아 클릭해 보세요!</div>
+    <p class="small-help" style="margin-bottom:12px;">❌ 틀려도 괜찮아요! 다시 시도하면 새로운 색이 나타나요</p>
     <div class="practice-area" id="practice-area"></div>
     <button class="btn" id="next-practice" style="display:none; margin-top:15px;">다 맞췄어요! ➡️</button>
   </div>
 
   <!-- Stage 3: 관찰하기 -->
   <div id="screen-stage2" class="screen">
-    <div class="record-box" style="margin-top:0;">
-      <div style="width:100%; text-align:center; margin-bottom:10px;">
-        <div style="font-size:28px; color:#333; font-weight:bold; line-height:1.4;">
-          👀 교실에 있는 물건들을 관찰하고<br>
-          <span style="color:var(--circle-color); background:#fff8dc; padding:2px 10px; border-radius:8px;">동그라미</span> <span style="color:var(--triangle-color); background:#e3f2fd; padding:2px 10px; border-radius:8px;">세모</span> <span style="color:var(--square-color); background:#ffebee; padding:2px 10px; border-radius:8px;">네모</span> 모양의 물건을 말해보세요!
-        </div>
-      </div>
-      <textarea class="stt-text tts-text" id="stt-stage2" placeholder="예: 칠판은 네모예요.&#10;시계는 동그라미 모양이에요..."></textarea>
+    <div class="title-block">
+      👀 교실에 있는 물건들을 관찰하고<br>
+      <span class="shape-word circle">동그라미</span>
+      <span class="shape-word triangle">세모</span>
+      <span class="shape-word square">네모</span>
+      모양의 물건을 말해보세요!
+    </div>
+
+    <div class="record-box">
+      <textarea class="stt-text" id="stt-stage2" placeholder="예: 칠판은 네모예요.&#10;시계는 동그라미 모양이에요..."></textarea>
       <div class="recording-controls">
         <button class="mic-btn" id="mic-stage2">🔴 녹음 시작</button>
         <button class="play-btn" id="play-stage2" disabled>▶️ 다시 듣기</button>
         <button class="hint-btn" id="hint-stage2">💡 힌트 보기</button>
       </div>
       <div id="hint-stage2-box" class="hint-box" style="display:none;">
-        <p>💡 <b>이렇게 찾아보세요!</b></p>
-        <p>⚪ 동그라미: 시계, 동전, 축구공</p>
-        <p>🔺 세모: 자, 삼각자, 지붕</p>
-        <p>🟥 네모: 칠판, 책, 창문, 책상</p>
+        <p>💡 이렇게 찾아보세요!</p>
+        <p><span class="shape-word circle" style="font-size:18px;">동그라미</span> 시계, 동전, 축구공</p>
+        <p><span class="shape-word triangle" style="font-size:18px;">세모</span> 자, 삼각자, 지붕</p>
+        <p><span class="shape-word square" style="font-size:18px;">네모</span> 칠판, 책, 창문, 책상</p>
       </div>
     </div>
-    <p class="small-help" style="margin-top:15px;">📝 줄바꿈은 엔터(↵)로 할 수 있어요!</p>
+    <p class="small-help" style="margin-top:12px;">📝 줄바꿈은 엔터(↵)로 할 수 있어요!</p>
     <div style="margin-top:15px;">
       <button class="btn" id="next-stage2" style="display:none;">다음으로 ➡️</button>
     </div>
@@ -571,7 +576,7 @@
     <div class="record-box" style="min-height:380px; justify-content:center;" id="quiz-box">
       <div id="quiz-content" style="width:100%; text-align:center;">
         <div id="quiz-img">⏰</div>
-        <h2 id="quiz-q" class="tts-text">이 시계는 어떤 모양인가요?</h2>
+        <h2 id="quiz-q">이 시계는 어떤 모양인가요?</h2>
         <div id="quiz-options"></div>
       </div>
 
@@ -586,7 +591,7 @@
 
   <!-- Stage 5: 중간 성찰 -->
   <div id="screen-reflect" class="screen">
-    <h2 class="tts-text">잠깐! 지금까지의 활동을 정리해볼까요?</h2>
+    <div class="title-block">잠깐! 지금까지의 활동을 정리해볼까요?</div>
 
     <div class="reflect-card">
       <div class="reflect-q">😊 오늘 활동은 어땠나요?</div>
@@ -601,60 +606,61 @@
     <div class="reflect-card">
       <div class="reflect-q">🎯 가장 많이 배운 것은?</div>
       <div class="emoji-row" data-name="learned">
-        <button class="emoji-choice" data-val="원의 특징">⚪ 원의 특징</button>
-        <button class="emoji-choice" data-val="삼각형의 특징">🔺 삼각형의 특징</button>
-        <button class="emoji-choice" data-val="사각형의 특징">🟥 사각형의 특징</button>
+        <button class="emoji-choice" data-val="원의 특징"><span class="shape-word circle" style="font-size:18px;">원</span>의 특징</button>
+        <button class="emoji-choice" data-val="삼각형의 특징"><span class="shape-word triangle" style="font-size:18px;">삼각형</span>의 특징</button>
+        <button class="emoji-choice" data-val="사각형의 특징"><span class="shape-word square" style="font-size:18px;">사각형</span>의 특징</button>
         <button class="emoji-choice" data-val="모두 다">✨ 모두 다</button>
       </div>
     </div>
 
-    <button class="btn btn-red" id="next-reflect" style="margin-top:10px;">나중 생각 말하러 가기 ➡️</button>
+    <button class="btn btn-red" id="next-reflect" style="margin-top:8px;">나중 생각 말하러 가기 ➡️</button>
   </div>
 
   <!-- Stage 6: 나중 생각 -->
   <div id="screen-stage5" class="screen">
-    <div class="record-box" style="margin-top:0;">
-      <div style="width:100%; text-align:center; margin-bottom:10px;">
-        <div style="font-size:28px; color:#333; font-weight:bold;">
-          🌟 내가 알게 된 <span style="color:var(--circle-color); background:#fff8dc; padding:2px 10px; border-radius:8px;">원</span> <span style="color:var(--triangle-color); background:#e3f2fd; padding:2px 10px; border-radius:8px;">삼각형</span> <span style="color:var(--square-color); background:#ffebee; padding:2px 10px; border-radius:8px;">사각형</span>에 대해 다시 얘기해볼까요?
-        </div>
-      </div>
+    <div class="title-block">
+      🌟 내가 알게 된
+      <span class="shape-word circle">원</span>
+      <span class="shape-word triangle">삼각형</span>
+      <span class="shape-word square">사각형</span>
+      에 대해 다시 얘기해볼까요?
+    </div>
 
-      <!-- 강조된 힌트 -->
+    <div class="record-box">
       <div class="must-words-hint">
-        🎯 <b>이 단어를 꼭 사용해보세요!</b>
+        🎯 이 단어를 꼭 사용해보세요!
         <span class="must-word">변</span>
         <span class="must-word">꼭짓점</span>
       </div>
 
-      <textarea class="stt-text tts-text" id="stt-stage5" placeholder="🎤 변과 꼭짓점이라는 단어를 사용해 설명해보세요!"></textarea>
+      <textarea class="stt-text" id="stt-stage5" placeholder="🎤 변과 꼭짓점이라는 단어를 사용해 설명해보세요!"></textarea>
       <div class="recording-controls">
         <button class="mic-btn" id="mic-stage5">🔴 녹음 시작</button>
         <button class="play-btn" id="play-stage5" disabled>▶️ 다시 듣기</button>
         <button class="hint-btn" id="hint-stage5">💡 힌트 보기</button>
       </div>
       <div id="hint-stage5-box" class="hint-box" style="display:none;">
-        <p>💡 <b>이렇게 말해보세요!</b></p>
-        <p>"원은 <b>변</b>과 <b>꼭짓점</b>이 하나도 없어요."</p>
-        <p>"삼각형은 <b>변</b>이 3개, <b>꼭짓점</b>이 3개 있어요."</p>
-        <p>"사각형은 <b>변</b>이 4개, <b>꼭짓점</b>이 4개 있어요."</p>
+        <p>💡 이렇게 말해보세요!</p>
+        <p>"<span class="shape-word circle" style="font-size:18px;">원</span>은 <b>변</b>과 <b>꼭짓점</b>이 하나도 없어요."</p>
+        <p>"<span class="shape-word triangle" style="font-size:18px;">삼각형</span>은 <b>변</b>이 3개, <b>꼭짓점</b>이 3개 있어요."</p>
+        <p>"<span class="shape-word square" style="font-size:18px;">사각형</span>은 <b>변</b>이 4개, <b>꼭짓점</b>이 4개 있어요."</p>
       </div>
     </div>
 
-    <div class="example-card" id="example-card" style="margin-top:12px;">
+    <div class="example-card" id="example-card">
       <h3>📖 예시 문장 (클릭하면 읽어줘요)</h3>
       <div class="example-list" id="example-list"></div>
     </div>
 
-    <div style="margin-top:12px; display:flex; gap:10px;">
-      <button class="btn btn-yellow" id="hide-example" style="display:none;">예시 가리고 다시 도전! 🎯</button>
+    <div style="margin-top:10px; display:flex; gap:10px;">
+      <button class="btn btn-yellow" id="hide-example" style="display:none; font-size:20px; padding:10px 22px;">예시 가리고 다시 도전! 🎯</button>
       <button class="btn" id="next-stage5" style="display:none;">평가하러 가기 ➡️</button>
     </div>
   </div>
 
   <!-- Stage 7: 비교 자기평가 -->
   <div id="screen-stage6" class="screen">
-    <h2 class="tts-text">처음과 나중을 비교해 볼까요?</h2>
+    <div class="title-block">처음과 나중을 비교해 볼까요?</div>
 
     <div class="compare-box">
       <div class="compare-card before">
@@ -673,7 +679,7 @@
     <div class="reflect-prompt">
       <h3>💭 무엇을 더 알게 되었나요?</h3>
       <p>처음에는 잘 몰랐는데 지금은 알게 된 내용이 있나요?</p>
-      <p>새롭게 배운 단어(변, 꼭짓점)나 도형의 특징을 떠올려 보세요!</p>
+      <p>새롭게 배운 단어(<b>변, 꼭짓점</b>)나 도형의 특징을 떠올려 보세요!</p>
     </div>
 
     <p style="font-size:22px; color:#444; margin:5px 0; font-weight:bold;">⭐ 더 알게 된 내용이 있다면 별점으로 칭찬해주세요!</p>
@@ -695,19 +701,33 @@
       <div class="sticker-choice" data-s="🏆">🏆</div>
     </div>
 
-    <div style="display:flex; gap:15px; margin-top:15px;">
+    <div style="display:flex; gap:15px; margin-top:12px;">
       <button class="btn btn-yellow" id="btn-re-record">다시 녹음할래요 🔄</button>
       <button class="btn btn-red" id="btn-submit" style="display:none;">제출하기 🚀</button>
     </div>
   </div>
 
   <!-- End -->
-  <div id="screen-end" class="screen">
+  <div id="screen-end" class="screen" style="justify-content:center; align-items:center;">
     <h1>🎉 배움 기록표 완성! 🎉</h1>
-    <h2 id="end-student-name"></h2>
+    <h1 id="end-student-name" style="font-size:38px; color:#333;"></h1>
     <div style="font-size:120px; margin:15px;">🏅</div>
     <p style="font-size:30px;">오늘도 열심히 참여해 주어서 고마워요!</p>
     <button class="btn" onclick="location.reload()" style="margin-top:25px;">처음으로 🏠</button>
+  </div>
+
+  <!-- 개념 학습 팝업 -->
+  <div id="concept-popup-bg">
+    <div class="concept-popup" id="concept-popup">
+      <div class="popup-counter" id="popup-counter">1 / 3</div>
+      <div class="popup-shape" id="popup-shape"></div>
+      <h3 id="popup-name">원</h3>
+      <p id="popup-body"></p>
+      <div class="popup-nav">
+        <button class="btn btn-yellow" id="popup-prev" style="visibility:hidden;">⬅️ 이전</button>
+        <button class="btn btn-red" id="popup-next">다음 친구 ➡️</button>
+      </div>
+    </div>
   </div>
 
   <!-- Loading -->
@@ -730,20 +750,10 @@
 
 </div>
 
-<!-- Help Modal -->
-<div class="modal-bg" id="help-modal">
-  <div class="modal-content">
-    <button class="modal-close" id="help-close">✕</button>
-    <h2 id="help-title">💡 도움받기</h2>
-    <div id="help-body" style="font-size:20px; line-height:1.6; color:#333;"></div>
-    <button class="btn" id="help-read" style="margin-top:15px;">🔊 읽어주기</button>
-  </div>
-</div>
-
 <!-- Reward overlay -->
 <div id="reward-overlay"></div>
 
-<!-- Stamp Award (단계 완료 시 도장 애니메이션) -->
+<!-- Stamp Award -->
 <div class="stamp-award" id="stamp-award">
   <div class="stamp-award-inner">
     <span class="icon">✓</span>
@@ -770,23 +780,18 @@ let recognition;
 let selectedStar = 0;
 let isRelearning = false;
 let questionCount = 5;
-let helpUsedCount = 0;
-let conceptSlideIdx = 0;
+let conceptPopupIdx = 0;
 let pickedSticker = '';
 let reflectFeeling = '', reflectLearned = '';
+let helpUsedCount = 0;
 
 let appData = {
-  studentName: '',
-  questionCount: 5,
-  stage1: { stt:'', audioBase64:'', mimeType:'', blobUrl:'' },
-  stage2: { stt:'', audioBase64:'', mimeType:'' },
-  stageQuiz: { correct:0, total:5 },
-  stage5: { stt:'', audioBase64:'', mimeType:'', blobUrl:'', usedExample:false },
-  rating: 0,
-  sticker: '',
-  reflectFeeling: '',
-  reflectLearned: '',
-  helpUsedCount: 0
+  studentName:'', questionCount:5,
+  stage1:{ stt:'', audioBase64:'', mimeType:'', blobUrl:'' },
+  stage2:{ stt:'', audioBase64:'', mimeType:'' },
+  stageQuiz:{ correct:0, total:5 },
+  stage5:{ stt:'', audioBase64:'', mimeType:'', blobUrl:'', usedExample:false },
+  rating:0, sticker:'', reflectFeeling:'', reflectLearned:'', helpUsedCount:0
 };
 
 const fallbackStudents = ['강민재','김서연','박지훈','이하윤','정시우','최유진','강도현','윤서아','임서준','한지은'];
@@ -799,7 +804,7 @@ const fallbackQuizzes = [
   { id:6, img:'🎲', q:'주사위 한 면은 어떤 모양인가요?', options:['사각형','삼각형'], a:'사각형', fb:'변 4개, 꼭짓점 4개의 사각형이에요.' },
   { id:7, img:'🍕', q:'피자 한 조각은 어떤 모양에 가까운가요?', options:['삼각형','원'], a:'삼각형', fb:'세 변과 세 꼭짓점이 있는 삼각형이에요.' },
   { id:8, img:'🔘', q:'동전은 어떤 모양인가요?', options:['원','사각형'], a:'원', fb:'둥근 모양이라서 원이에요.' },
-  { id:9, img:'📚', q:'책의 표지는 어떤 모양인가요?', options:['사각형','원'], a:'사각형', fb:'변 4개와 꼭짓점 4개가 있는 사각형이에요.' },
+  { id:9, img:'📚', q:'책의 표지는 어떤 모양인가요?', options:['사각형','원'], a:'사각형', fb:'변 4개와 꼭짓점 4개의 사각형이에요.' },
   { id:10, img:'🏠', q:'집 지붕은 어떤 모양인가요?', options:['삼각형','사각형'], a:'삼각형', fb:'세 변과 세 꼭짓점이 있는 삼각형이에요.' }
 ];
 
@@ -811,15 +816,8 @@ const fallbackExamples = [
   '책은 사각형 모양이에요.'
 ];
 
-const fallbackHelp = {
-  'screen-stage1': '내가 알고 있는 동그라미, 세모, 네모 모양을 떠올려 보세요. 어떻게 생겼나요? 어디에서 보았나요?',
-  'screen-stage2': '교실을 둘러보세요. 시계, 칠판, 책, 창문... 각각 동그라미, 세모, 네모 중 어떤 모양인지 말해보세요.',
-  'screen-stage5': '변(곧은 선)과 꼭짓점(뾰족한 곳)이라는 단어를 꼭 사용해보세요. 예: 사각형은 변이 4개 있어요.'
-};
-
 let quizCurriculum = [...fallbackQuizzes];
 let examples = [...fallbackExamples];
-let helpTexts = {...fallbackHelp};
 
 async function loadConfig() {
   const select = document.getElementById('student-select');
@@ -839,18 +837,18 @@ async function loadConfig() {
       populate((data.students && data.students.length) ? data.students : fallbackStudents);
       if (data.quizzes && data.quizzes.length) quizCurriculum = data.quizzes;
       if (data.examples && data.examples.length) examples = data.examples;
-      if (data.helpTexts) helpTexts = {...fallbackHelp, ...data.helpTexts};
     } else { populate(fallbackStudents); }
   } catch (e) { populate(fallbackStudents); }
 }
 loadConfig();
 
+// === Audio ===
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const initAudioContextLocally = () => { if (audioCtx.state === 'suspended') audioCtx.resume(); };
+const initAudioCtx = () => { if (audioCtx.state === 'suspended') audioCtx.resume(); };
 
 const playChime = () => {
   if (!isSpeakerOn) return;
-  initAudioContextLocally();
+  initAudioCtx();
   const t = audioCtx.currentTime;
   const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
   osc.connect(gain); gain.connect(audioCtx.destination);
@@ -864,7 +862,7 @@ const playChime = () => {
 };
 const playWrong = () => {
   if (!isSpeakerOn) return;
-  initAudioContextLocally();
+  initAudioCtx();
   const t = audioCtx.currentTime;
   const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
   osc.connect(gain); gain.connect(audioCtx.destination);
@@ -877,7 +875,7 @@ const playWrong = () => {
 };
 const playClick = () => {
   if (!isSpeakerOn) return;
-  initAudioContextLocally();
+  initAudioCtx();
   const t = audioCtx.currentTime;
   const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
   osc.connect(gain); gain.connect(audioCtx.destination);
@@ -888,11 +886,9 @@ const playClick = () => {
   gain.gain.exponentialRampToValueAtTime(0.01,t+0.1);
   osc.start(t); osc.stop(t+0.1);
 };
-
-// 도장 찍히는 효과음
 const playStampSound = () => {
   if (!isSpeakerOn) return;
-  initAudioContextLocally();
+  initAudioCtx();
   const t = audioCtx.currentTime;
   const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
   osc.connect(gain); gain.connect(audioCtx.destination);
@@ -905,6 +901,7 @@ const playStampSound = () => {
   osc.start(t); osc.stop(t+0.5);
 };
 
+// === TTS ===
 const synth = window.speechSynthesis;
 let bestVoice = null;
 function pickBestVoice() {
@@ -914,14 +911,10 @@ function pickBestVoice() {
   if (v) return v;
   v = voices.find(v => v.lang === 'ko-KR' && /wavenet|neural/i.test(v.name));
   if (v) return v;
-  v = voices.find(v => v.lang === 'ko-KR' && /premium|enhanced|natural/i.test(v.name));
-  if (v) return v;
   v = voices.find(v => v.lang === 'ko-KR');
   return v || null;
 }
-if (synth.onvoiceschanged !== undefined) {
-  synth.onvoiceschanged = () => { bestVoice = pickBestVoice(); };
-}
+if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = () => { bestVoice = pickBestVoice(); };
 setTimeout(() => { bestVoice = pickBestVoice(); }, 500);
 
 function speak(text, opts={}) {
@@ -929,10 +922,7 @@ function speak(text, opts={}) {
   synth.cancel();
   if (!bestVoice) bestVoice = pickBestVoice();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'ko-KR';
-  u.rate = opts.rate || 0.95;
-  u.pitch = 1.0;
-  u.volume = 1.0;
+  u.lang = 'ko-KR'; u.rate = opts.rate || 0.95; u.pitch = 1.0;
   if (bestVoice) u.voice = bestVoice;
   synth.speak(u);
 }
@@ -942,25 +932,10 @@ speakerBtn.addEventListener('click', () => {
   isSpeakerOn = !isSpeakerOn;
   speakerBtn.classList.toggle('on', isSpeakerOn);
   speakerBtn.textContent = isSpeakerOn ? '🔊' : '🔈';
-  if (isSpeakerOn) {
-    const active = document.querySelector('.screen.active');
-    if (active) {
-      const title = active.querySelector('.tts-text');
-      if (title) speak(title.innerText);
-    }
-  } else {
-    synth.cancel();
-  }
+  if (!isSpeakerOn) synth.cancel();
 });
 
-function playTTSForActive(screenId) {
-  if (!isSpeakerOn) return;
-  setTimeout(() => {
-    const title = document.querySelector(`#${screenId} .tts-text`);
-    if (title) speak(title.innerText);
-  }, 300);
-}
-
+// === STT ===
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SR();
@@ -968,9 +943,10 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   recognition.interimResults = true;
   recognition.continuous = true;
 } else {
-  alert('크롬 브라우저를 사용해주세요 (음성 인식 지원).');
+  alert('크롬 브라우저를 사용해주세요!');
 }
 
+// === Audio recording ===
 let mediaRecorder, audioChunks = [], isRecording = false;
 let micStream = null;
 
@@ -989,7 +965,7 @@ async function initAudioOnce() {
     mediaRecorder = new MediaRecorder(micStream, { mimeType:'audio/webm' });
     return true;
   } catch (err) {
-    alert('마이크 권한이 필요해요. 브라우저 주소창의 자물쇠 아이콘에서 허용해주세요!');
+    alert('마이크 권한이 필요해요!');
     return false;
   }
 }
@@ -1082,7 +1058,7 @@ setupRecording(1);
 setupRecording(2);
 setupRecording(5);
 
-// --- 힌트 버튼 토글 ---
+// === 힌트 버튼 ===
 ['stage1','stage2','stage5'].forEach(s => {
   const btn = document.getElementById(`hint-${s}`);
   const box = document.getElementById(`hint-${s}-box`);
@@ -1092,15 +1068,17 @@ setupRecording(5);
       box.style.display = willShow ? 'block' : 'none';
       btn.classList.toggle('active', willShow);
       btn.innerHTML = willShow ? '💡 힌트 숨기기' : '💡 힌트 보기';
-      if (willShow && isSpeakerOn) {
-        speak(box.innerText.replace(/\n/g,' '));
+      if (willShow) {
+        helpUsedCount++;
+        appData.helpUsedCount = helpUsedCount;
+        if (isSpeakerOn) speak(box.innerText);
       }
       playClick();
     });
   }
 });
 
-// --- Concept Slides ---
+// === 개념 학습 팝업 ===
 const conceptData = [
   {
     cls:'circle',
@@ -1119,53 +1097,57 @@ const conceptData = [
   }
 ];
 
-function renderConceptSlide(idx) {
-  const container = document.getElementById('concept-slides');
-  // 기존 슬라이드 모두 제거 (한 번에 하나만 보이도록)
-  container.innerHTML = '';
+function showConceptPopup(idx) {
   const c = conceptData[idx];
-  const card = document.createElement('div');
-  card.className = `concept-card-big ${c.cls}`;
-  card.innerHTML = `
-    <div class="concept-shape-big ${c.cls}"></div>
-    <h3>${c.name}</h3>
-    <p>${c.body}</p>
-  `;
-  container.appendChild(card);
+  const popup = document.getElementById('concept-popup');
+  popup.className = 'concept-popup ' + c.cls;
+  document.getElementById('popup-counter').innerText = `${idx+1} / ${conceptData.length}`;
+  document.getElementById('popup-shape').className = 'popup-shape ' + c.cls;
+  document.getElementById('popup-name').innerText = c.name;
+  document.getElementById('popup-body').innerHTML = c.body;
 
-  // dot 갱신
-  document.querySelectorAll('.slide-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+  document.getElementById('popup-prev').style.visibility = idx === 0 ? 'hidden' : 'visible';
+  document.getElementById('popup-next').innerText = idx === conceptData.length - 1
+    ? '연습 문제 풀러가기 🚀'
+    : '다음 친구 ➡️';
 
-  // 카운터 갱신
-  const counter = document.getElementById('slide-counter');
-  if (counter) counter.innerText = `${idx + 1} / ${conceptData.length}`;
+  document.getElementById('concept-popup-bg').classList.add('show');
 
   if (isSpeakerOn) {
     const tmp = document.createElement('div'); tmp.innerHTML = c.body;
     speak(`${c.name}. ${tmp.innerText}`);
   }
-
-  // 이전 버튼 표시
-  document.getElementById('concept-prev').style.visibility = idx === 0 ? 'hidden' : 'visible';
-
-  // 다음 버튼 / 연습 문제 버튼
-  if (idx === conceptData.length - 1) {
-    document.getElementById('concept-next').style.visibility = 'hidden';
-    document.getElementById('next-concept').style.display = 'inline-flex';
-  } else {
-    document.getElementById('concept-next').style.visibility = 'visible';
-    document.getElementById('next-concept').style.display = 'none';
-  }
 }
 
-document.getElementById('concept-prev').addEventListener('click', () => {
-  if (conceptSlideIdx > 0) { conceptSlideIdx--; renderConceptSlide(conceptSlideIdx); playClick(); }
-});
-document.getElementById('concept-next').addEventListener('click', () => {
-  if (conceptSlideIdx < conceptData.length - 1) { conceptSlideIdx++; renderConceptSlide(conceptSlideIdx); playClick(); }
+document.getElementById('open-concept-popup').addEventListener('click', () => {
+  conceptPopupIdx = 0;
+  showConceptPopup(0);
+  playClick();
 });
 
-// --- Practice ---
+document.getElementById('popup-prev').addEventListener('click', () => {
+  if (conceptPopupIdx > 0) { conceptPopupIdx--; showConceptPopup(conceptPopupIdx); playClick(); }
+});
+
+document.getElementById('popup-next').addEventListener('click', () => {
+  if (conceptPopupIdx < conceptData.length - 1) {
+    conceptPopupIdx++; showConceptPopup(conceptPopupIdx); playClick();
+  } else {
+    // 마지막 친구 → 닫고 연습으로
+    document.getElementById('concept-popup-bg').classList.remove('show');
+    setStamp(2, '개념 학습 완료!');
+    if (isRelearning) {
+      document.getElementById('stt-stage5').value = '';
+      document.getElementById('next-stage5').style.display = 'none';
+      showScreen('screen-stage5');
+    } else {
+      renderPractice();
+      showScreen('screen-practice');
+    }
+  }
+});
+
+// === Practice ===
 const practiceItems = [
   { img:'⏰', text:'시계는 어떤 모양?', a:'원' },
   { img:'📚', text:'책의 표지는?', a:'사각형' },
@@ -1222,11 +1204,10 @@ function checkAllCorrect() {
 }
 
 document.getElementById('next-practice').addEventListener('click', () => {
-  setStamp(2, '개념 학습 완료!');
   showScreen('screen-stage2');
 });
 
-// --- Quiz ---
+// === Quiz ===
 let activeQuestions = [], quizIndex = 0, wrongList = [], isReviewMode = false;
 
 function loadQuiz() {
@@ -1242,11 +1223,9 @@ function loadQuiz() {
   q.options.forEach(opt => {
     const btn = document.createElement('button');
     btn.className = 'btn';
-    btn.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
-    if (opt === '원') btn.style.background = 'var(--circle-color)';
-    if (opt === '삼각형') btn.style.background = 'var(--triangle-color)';
-    if (opt === '사각형') btn.style.background = 'var(--square-color)';
-    btn.style.color = opt === '원' ? '#333' : 'white';
+    if (opt === '원') { btn.style.background = 'var(--circle-color)'; btn.style.color = '#5c4400'; }
+    if (opt === '삼각형') { btn.style.background = 'var(--triangle-color)'; btn.style.color = 'white'; }
+    if (opt === '사각형') { btn.style.background = 'var(--square-color)'; btn.style.color = 'white'; }
     btn.innerText = opt;
     btn.onclick = () => checkQuiz(opt);
     opts.appendChild(btn);
@@ -1311,30 +1290,34 @@ document.getElementById('btn-quiz-next').onclick = () => {
   }
 };
 
-// --- Screen Navigation ---
+// === Screen Navigation ===
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+
+  // 1줄 요약 표시 (개념 학습 이후 모든 화면)
   const showReminder = !['screen-start','screen-stage1','screen-end'].includes(id);
   document.getElementById('concept-reminder').classList.toggle('show', showReminder);
-  playTTSForActive(id);
 
-  // 현재 진행 중 단계 표시
+  // 현재 단계 표시
   const stepMap = {
-    'screen-stage1':1,
-    'screen-concept':2,
-    'screen-practice':2,
-    'screen-stage2':3,
-    'screen-stage3':4,
-    'screen-reflect':5,
-    'screen-stage5':5,
-    'screen-stage6':6
+    'screen-stage1':1, 'screen-concept':2, 'screen-practice':2,
+    'screen-stage2':3, 'screen-stage3':4,
+    'screen-reflect':5, 'screen-stage5':5, 'screen-stage6':6
   };
   document.querySelectorAll('.stamp').forEach(s => s.classList.remove('current'));
   const cur = stepMap[id];
   if (cur) {
     const stmp = document.getElementById('stamp' + cur);
     if (stmp && !stmp.classList.contains('active')) stmp.classList.add('current');
+  }
+
+  // 현재 화면 TTS
+  if (isSpeakerOn) {
+    setTimeout(() => {
+      const title = document.querySelector(`#${id} .title-block`);
+      if (title) speak(title.innerText);
+    }, 300);
   }
 
   if (id === 'screen-stage5') {
@@ -1345,14 +1328,12 @@ function showScreen(id) {
   if (id === 'screen-stage6') prepareSelfEval();
 }
 
-// 학습 칭찬 도장 + 단계 완료
 function setStamp(num, awardText) {
   const stamp = document.getElementById(`stamp${num}`);
   stamp.classList.remove('current');
   stamp.classList.add('active');
   stamp.innerHTML = '✓';
   document.querySelector(`.stamp-container[data-step="${num}"]`).classList.add('done');
-  // 도장 애니메이션
   showStampAward(awardText || '잘했어요!');
 }
 
@@ -1374,7 +1355,7 @@ document.querySelectorAll('.qty-btn').forEach(b => {
 });
 
 document.getElementById('btn-start').addEventListener('click', async () => {
-  initAudioContextLocally();
+  initAudioCtx();
   const select = document.getElementById('student-select');
   if (!select.value) return alert('이름을 선택해주세요!');
   currentStudent = select.value;
@@ -1391,20 +1372,7 @@ document.getElementById('btn-start').addEventListener('click', async () => {
 document.getElementById('next-stage1').addEventListener('click', () => {
   appData.stage1.stt = document.getElementById('stt-stage1').value.trim();
   setStamp(1, '처음 생각 완료!');
-  conceptSlideIdx = 0;
-  renderConceptSlide(0);
   showScreen('screen-concept');
-});
-
-document.getElementById('next-concept').addEventListener('click', () => {
-  if (isRelearning) {
-    document.getElementById('stt-stage5').value = '';
-    document.getElementById('next-stage5').style.display = 'none';
-    showScreen('screen-stage5');
-    return;
-  }
-  renderPractice();
-  showScreen('screen-practice');
 });
 
 document.getElementById('next-stage2').addEventListener('click', () => {
@@ -1417,7 +1385,7 @@ document.getElementById('next-stage2').addEventListener('click', () => {
   showScreen('screen-stage3');
 });
 
-// --- Reflect ---
+// === Reflect ===
 document.querySelectorAll('.emoji-row').forEach(row => {
   row.querySelectorAll('.emoji-choice').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1527,34 +1495,6 @@ function showRewardConfetti() {
   setTimeout(() => { overlay.style.display = 'none'; }, 3000);
 }
 
-document.getElementById('help-btn').addEventListener('click', () => {
-  const active = document.querySelector('.screen.active');
-  if (!active) return;
-  const id = active.id;
-  const help = helpTexts[id];
-  if (!help) {
-    alert('이 화면에서는 활동 안내를 잘 따라가시면 돼요! 😊');
-    return;
-  }
-  helpUsedCount++;
-  appData.helpUsedCount = helpUsedCount;
-  document.getElementById('help-body').innerHTML = help.replace(/\n/g, '<br>');
-  document.getElementById('help-modal').classList.add('show');
-  if (isSpeakerOn) speak(help, { rate:0.9 });
-});
-document.getElementById('help-close').addEventListener('click', () => {
-  document.getElementById('help-modal').classList.remove('show');
-  synth.cancel();
-});
-document.getElementById('help-read').addEventListener('click', () => {
-  if (!isSpeakerOn) {
-    isSpeakerOn = true;
-    speakerBtn.classList.add('on');
-    speakerBtn.textContent = '🔊';
-  }
-  speak(document.getElementById('help-body').innerText, { rate:0.9 });
-});
-
 document.getElementById('btn-submit').addEventListener('click', async () => {
   if (selectedStar <= 3 && !isRelearning) {
     document.getElementById('popup-bg').classList.add('show');
@@ -1568,8 +1508,7 @@ document.getElementById('popup-yes').addEventListener('click', () => {
   document.getElementById('popup-bg').classList.remove('show');
   document.getElementById('math-review-popup').style.display = 'none';
   isRelearning = true;
-  conceptSlideIdx = 0;
-  renderConceptSlide(0);
+  conceptPopupIdx = 0;
   showScreen('screen-concept');
 });
 document.getElementById('popup-no').addEventListener('click', async () => {
@@ -1580,7 +1519,7 @@ document.getElementById('popup-no').addEventListener('click', async () => {
 
 async function actuallySubmit() {
   if (!GAS_URL || GAS_URL.includes('PASTE')) {
-    alert('GAS_URL이 설정되지 않았어요. 코드 상단의 GAS_URL을 입력해주세요.');
+    alert('GAS_URL이 설정되지 않았어요.');
     return;
   }
   setStamp(6, '자기 평가 완료!');
@@ -1588,8 +1527,7 @@ async function actuallySubmit() {
 
   try {
     const res = await fetch(GAS_URL, {
-      method:'POST',
-      body:JSON.stringify(appData),
+      method:'POST', body:JSON.stringify(appData),
       headers:{ 'Content-Type':'text/plain' }
     });
     let result;
