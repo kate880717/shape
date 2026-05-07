@@ -251,43 +251,40 @@
   .concept-popup {
     width:700px; max-width:90%; padding:40px 50px; border-radius:30px;
     text-align:center; box-shadow:0 25px 60px rgba(0,0,0,0.4);
-    color:white; animation:pop 0.5s ease;
-    border:6px solid white;
+    background:white; color:#333;
+    animation:pop 0.5s ease;
+    border:6px solid #eee;
   }
-  .concept-popup.circle   { background:linear-gradient(135deg,#ffe066,#fcc419,#f59f00); }
-  .concept-popup.triangle { background:linear-gradient(135deg,#74c0fc,#4a90e2,#1864ab); }
-  .concept-popup.square   { background:linear-gradient(135deg,#ff8787,#eb4d4b,#c0392b); }
+  .concept-popup.circle   { border-color:var(--circle-color); }
+  .concept-popup.triangle { border-color:var(--triangle-color); }
+  .concept-popup.square   { border-color:var(--square-color); }
 
   .popup-shape {
     width:140px; height:140px; margin:0 auto 18px auto;
-    filter:drop-shadow(0 8px 20px rgba(0,0,0,0.3));
+    filter:drop-shadow(0 5px 15px rgba(0,0,0,0.15));
   }
-  .popup-shape.circle   { background:white; border-radius:50%; }
-  .popup-shape.square   { background:white; }
+  .popup-shape.circle   { background:var(--circle-color); border-radius:50%; }
+  .popup-shape.square   { background:var(--square-color); }
   .popup-shape.triangle {
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,5 5,95 95,95' fill='white'/></svg>");
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,5 5,95 95,95' fill='%234a90e2'/></svg>");
     background-size:contain; background-repeat:no-repeat; background-position:center;
   }
   .concept-popup h3 {
-    font-size:50px; margin:0 0 18px 0;
-    background:white; display:inline-block;
-    padding:8px 30px; border-radius:50px;
-    text-shadow:none;
+    font-size:48px; margin:0 0 18px 0;
   }
-  .concept-popup.circle h3   { color:#f59f00; }
+  .concept-popup.circle h3   { color:#e6a800; }
   .concept-popup.triangle h3 { color:#1864ab; }
   .concept-popup.square h3   { color:#c0392b; }
   .concept-popup p {
     font-size:24px; line-height:1.6; margin:8px 0;
-    word-break:keep-all; font-weight:bold;
+    word-break:keep-all; color:#333;
   }
   .concept-popup p b {
-    background:rgba(255,255,255,0.3); padding:2px 12px; border-radius:8px;
-    display:inline-block;
+    color:#e74c3c; font-weight:bold;
   }
   .popup-counter {
-    display:inline-block; background:white; color:#333;
-    padding:5px 18px; border-radius:30px; font-size:20px;
+    display:inline-block; background:#f5f5f5; color:#666;
+    padding:5px 18px; border-radius:30px; font-size:18px;
     font-weight:bold; margin-bottom:15px;
   }
   .popup-nav {
@@ -452,10 +449,11 @@
     <div class="stamp-path">
       <div class="stamp-container" data-step="1"><div class="stamp" id="stamp1">1</div><div class="stamp-label">처음 생각</div></div>
       <div class="stamp-container" data-step="2"><div class="stamp" id="stamp2">2</div><div class="stamp-label">개념 학습</div></div>
-      <div class="stamp-container" data-step="3"><div class="stamp" id="stamp3">3</div><div class="stamp-label">관찰하기</div></div>
-      <div class="stamp-container" data-step="4"><div class="stamp" id="stamp4">4</div><div class="stamp-label">문제 풀이</div></div>
-      <div class="stamp-container" data-step="5"><div class="stamp" id="stamp5">5</div><div class="stamp-label">나중 생각</div></div>
-      <div class="stamp-container" data-step="6"><div class="stamp" id="stamp6">6</div><div class="stamp-label">자기 평가</div></div>
+      <div class="stamp-container" data-step="3"><div class="stamp" id="stamp3">3</div><div class="stamp-label">개념 확인</div></div>
+      <div class="stamp-container" data-step="4"><div class="stamp" id="stamp4">4</div><div class="stamp-label">관찰하기</div></div>
+      <div class="stamp-container" data-step="5"><div class="stamp" id="stamp5">5</div><div class="stamp-label">문제 풀이</div></div>
+      <div class="stamp-container" data-step="6"><div class="stamp" id="stamp6">6</div><div class="stamp-label">나중 생각</div></div>
+      <div class="stamp-container" data-step="7"><div class="stamp" id="stamp7">7</div><div class="stamp-label">자기 평가</div></div>
     </div>
     <div class="header-buttons">
       <button class="speaker-btn" id="speaker-toggle">🔈</button>
@@ -524,12 +522,29 @@
     <button class="btn btn-red" id="open-concept-popup">친구들 만나기 🚀</button>
   </div>
 
-  <!-- Stage 2.5: 연습 -->
+  <!-- Stage 2.5: 개념 확인 퀴즈 -->
   <div id="screen-practice" class="screen">
-    <div class="title-block">알맞은 도형 친구를 찾아 클릭해 보세요!</div>
-    <p class="small-help" style="margin-bottom:12px;">❌ 틀려도 괜찮아요! 다시 시도하면 새로운 색이 나타나요</p>
-    <div class="practice-area" id="practice-area"></div>
-    <button class="btn" id="next-practice" style="display:none; margin-top:15px;">다 맞췄어요! ➡️</button>
+    <div class="title-block" id="concept-quiz-title">
+      📝 도형의 특징을 잘 익혔는지 확인해 볼까요?
+    </div>
+    <div id="concept-quiz-progress" style="font-size:22px; padding:8px 20px; border-radius:20px; background:var(--accent); color:#333; margin-bottom:15px;">
+      문제 1 / 5
+    </div>
+
+    <div id="concept-quiz-box" style="width:100%; max-width:900px; background:white; border-radius:20px; padding:30px; box-shadow:0 10px 30px rgba(0,0,0,0.08); text-align:center;">
+      <div id="concept-quiz-content">
+        <div id="concept-quiz-shape" style="font-size:80px; margin-bottom:8px;"></div>
+        <h2 id="concept-quiz-q" style="font-size:30px; margin-bottom:25px; color:#333;"></h2>
+        <div id="concept-quiz-options" style="display:flex; gap:15px; justify-content:center; flex-wrap:wrap;"></div>
+      </div>
+
+      <div id="concept-quiz-feedback" style="display:none; flex-direction:column; align-items:center; gap:18px;">
+        <div id="cq-fb-icon" style="font-size:80px;">🎉</div>
+        <h2 id="cq-fb-title" style="font-size:36px; color:var(--secondary);">정답이에요!</h2>
+        <p id="cq-fb-msg" style="font-size:22px; background:#f8f9fa; padding:15px; border-radius:12px; line-height:1.4;"></p>
+        <button class="btn" id="cq-next-btn">다음 문제 ➡️</button>
+      </div>
+    </div>
   </div>
 
   <!-- Stage 3: 관찰하기 -->
@@ -1128,7 +1143,7 @@ document.getElementById('popup-next').addEventListener('click', () => {
   if (conceptPopupIdx < conceptData.length - 1) {
     conceptPopupIdx++; showConceptPopup(conceptPopupIdx); playClick();
   } else {
-    // 마지막 친구 → 닫고 연습으로
+    // 마지막 친구 → 닫고 개념 확인 퀴즈로
     document.getElementById('concept-popup-bg').classList.remove('show');
     setStamp(2, '개념 학습 완료!');
     if (isRelearning) {
@@ -1136,71 +1151,138 @@ document.getElementById('popup-next').addEventListener('click', () => {
       document.getElementById('next-stage5').style.display = 'none';
       showScreen('screen-stage5');
     } else {
-      renderPractice();
+      cqIndex = 0;
+      cqWrong = [];
+      cqReviewMode = false;
+      loadConceptQuiz();
       showScreen('screen-practice');
     }
   }
 });
 
-// === Practice ===
-const practiceItems = [
-  { img:'⏰', text:'시계는 어떤 모양?', a:'원' },
-  { img:'📚', text:'책의 표지는?', a:'사각형' },
-  { img:'📐', text:'삼각자는?', a:'삼각형' }
+// === 개념 확인 퀴즈 (변/꼭짓점 개념 확인) ===
+const conceptQuizzes = [
+  {
+    shape:'⚪', q:'원에는 곧은 선(변)이 몇 개 있을까요?',
+    options:['0개','3개','4개'], a:'0개',
+    fb:'맞아요! 원은 변과 꼭짓점이 하나도 없어요.'
+  },
+  {
+    shape:'🔺', q:'삼각형의 변은 몇 개일까요?',
+    options:['2개','3개','4개'], a:'3개',
+    fb:'정답! 삼각형은 변이 3개, 꼭짓점도 3개예요.'
+  },
+  {
+    shape:'🟥', q:'사각형의 꼭짓점은 몇 개일까요?',
+    options:['3개','4개','5개'], a:'4개',
+    fb:'맞아요! 사각형은 변이 4개, 꼭짓점도 4개예요.'
+  },
+  {
+    shape:'🔺', q:'곧은 선(변)이 3개, 뾰족한 곳(꼭짓점)이 3개인 도형은?',
+    options:['원','삼각형','사각형'], a:'삼각형',
+    fb:'잘했어요! 변과 꼭짓점이 각각 3개면 삼각형이에요.'
+  },
+  {
+    shape:'⚪', q:'변과 꼭짓점이 하나도 없는 둥근 도형은?',
+    options:['원','삼각형','사각형'], a:'원',
+    fb:'정답! 둥글고 곧은 선이 없으면 원이에요.'
+  }
 ];
 
-function renderPractice() {
-  const area = document.getElementById('practice-area');
-  area.innerHTML = '';
-  practiceItems.forEach((it, idx) => {
-    const row = document.createElement('div');
-    row.className = 'practice-row';
-    row.dataset.idx = idx;
-    row.innerHTML = `
-      <div class="practice-img">${it.img}</div>
-      <div class="practice-text">${it.text}</div>
-      <div class="practice-zones">
-        <button class="drop-zone zone-circle" data-v="원">원</button>
-        <button class="drop-zone zone-triangle" data-v="삼각형">삼각형</button>
-        <button class="drop-zone zone-square" data-v="사각형">사각형</button>
-      </div>`;
-    area.appendChild(row);
+let cqIndex = 0;
+let cqWrong = [];
+let cqReviewMode = false;
 
-    row.querySelectorAll('.drop-zone').forEach(z => {
-      z.addEventListener('click', () => {
-        const ans = z.dataset.v;
-        if (ans === it.a) {
-          row.querySelectorAll('.drop-zone').forEach(b => b.classList.remove('selected'));
-          z.classList.add('selected');
-          row.classList.remove('wrong');
-          row.classList.add('correct');
-          playChime();
-          checkAllCorrect();
-        } else {
-          row.classList.add('wrong');
-          playWrong();
-          setTimeout(() => {
-            row.classList.remove('wrong');
-            row.querySelectorAll('.drop-zone').forEach(b => b.classList.remove('selected'));
-          }, 700);
-        }
-      });
-    });
+function loadConceptQuiz() {
+  const list = cqReviewMode ? cqWrong : conceptQuizzes;
+  const q = list[cqIndex];
+
+  document.getElementById('concept-quiz-shape').innerText = q.shape;
+  document.getElementById('concept-quiz-q').innerText = q.q;
+  document.getElementById('concept-quiz-progress').innerText = cqReviewMode
+    ? `복습 ${cqIndex+1} / ${cqWrong.length}`
+    : `문제 ${cqIndex+1} / ${conceptQuizzes.length}`;
+
+  const opts = document.getElementById('concept-quiz-options');
+  opts.innerHTML = '';
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.style.fontSize = '24px';
+    btn.style.padding = '14px 32px';
+    // 도형 이름이면 색깔 적용
+    if (opt === '원') btn.style.color = '#e6a800';
+    else if (opt === '삼각형') btn.style.color = '#1864ab';
+    else if (opt === '사각형') btn.style.color = '#c0392b';
+    if (['원','삼각형','사각형'].includes(opt)) {
+      btn.style.background = 'white';
+      btn.style.border = '3px solid currentColor';
+      btn.style.fontWeight = 'bold';
+    }
+    btn.innerText = opt;
+    btn.onclick = () => checkConceptQuiz(opt);
+    opts.appendChild(btn);
   });
+
+  document.getElementById('concept-quiz-content').style.display = 'block';
+  document.getElementById('concept-quiz-feedback').style.display = 'none';
+  if (isSpeakerOn) speak(q.q);
 }
 
-function checkAllCorrect() {
-  const all = document.querySelectorAll('.practice-row');
-  const ok = Array.from(all).every(r => r.classList.contains('correct'));
-  if (ok) {
-    document.getElementById('next-practice').style.display = 'inline-flex';
+function checkConceptQuiz(ans) {
+  playClick();
+  const list = cqReviewMode ? cqWrong : conceptQuizzes;
+  const q = list[cqIndex];
+  const correct = ans === q.a;
+
+  document.getElementById('concept-quiz-content').style.display = 'none';
+  document.getElementById('concept-quiz-feedback').style.display = 'flex';
+
+  if (correct) {
+    setTimeout(playChime, 300);
+    document.getElementById('cq-fb-icon').innerText = '🎉';
+    document.getElementById('cq-fb-title').innerText = '정답이에요!';
+    document.getElementById('cq-fb-title').style.color = '#4ecdc4';
+    document.getElementById('cq-fb-msg').innerText = q.fb;
+    speak(`정답이에요! ${q.fb}`);
+    document.getElementById('cq-next-btn').className = 'btn btn-yellow';
+    document.getElementById('cq-next-btn').innerText = '다음 문제 ➡️';
     showRewardConfetti();
+  } else {
+    setTimeout(playWrong, 300);
+    if (!cqReviewMode && !cqWrong.find(w => w.q === q.q)) cqWrong.push(q);
+    document.getElementById('cq-fb-icon').innerText = '🤔';
+    document.getElementById('cq-fb-title').innerText = '다시 생각해볼까요?';
+    document.getElementById('cq-fb-title').style.color = '#ff6b6b';
+    document.getElementById('cq-fb-msg').innerText = '괜찮아요! 도형의 변과 꼭짓점을 다시 세어보아요.';
+    speak('다시 한 번 생각해볼까요?');
+    document.getElementById('cq-next-btn').className = 'btn btn-red';
+    document.getElementById('cq-next-btn').innerText = '다시 풀기 🔄';
   }
 }
 
-document.getElementById('next-practice').addEventListener('click', () => {
-  showScreen('screen-stage2');
-});
+document.getElementById('cq-next-btn').onclick = () => {
+  const fbTitle = document.getElementById('cq-fb-title').innerText;
+  if (fbTitle === '다시 생각해볼까요?') {
+    document.getElementById('concept-quiz-content').style.display = 'block';
+    document.getElementById('concept-quiz-feedback').style.display = 'none';
+    return;
+  }
+  const list = cqReviewMode ? cqWrong : conceptQuizzes;
+  if (cqIndex < list.length - 1) {
+    cqIndex++;
+    loadConceptQuiz();
+  } else {
+    if (!cqReviewMode && cqWrong.length > 0) {
+      cqReviewMode = true; cqIndex = 0;
+      alert(`헷갈렸던 ${cqWrong.length}문제를 다시 풀어볼까요?`);
+      loadConceptQuiz();
+    } else {
+      setStamp(3, '개념 확인 완료!');
+      showScreen('screen-stage2');
+    }
+  }
+};
 
 // === Quiz ===
 let activeQuestions = [], quizIndex = 0, wrongList = [], isReviewMode = false;
@@ -1279,7 +1361,7 @@ document.getElementById('btn-quiz-next').onclick = () => {
       alert(`문제를 모두 풀었어요!\n이제 헷갈렸던 ${wrongList.length}문제를 다시 복습해볼까요?`);
       loadQuiz();
     } else {
-      setStamp(4, '문제 풀이 완료!');
+      setStamp(5, '문제 풀이 완료!');
       showScreen('screen-reflect');
     }
   }
@@ -1296,9 +1378,9 @@ function showScreen(id) {
 
   // 현재 단계 표시
   const stepMap = {
-    'screen-stage1':1, 'screen-concept':2, 'screen-practice':2,
-    'screen-stage2':3, 'screen-stage3':4,
-    'screen-reflect':5, 'screen-stage5':5, 'screen-stage6':6
+    'screen-stage1':1, 'screen-concept':2, 'screen-practice':3,
+    'screen-stage2':4, 'screen-stage3':5,
+    'screen-reflect':6, 'screen-stage5':6, 'screen-stage6':7
   };
   document.querySelectorAll('.stamp').forEach(s => s.classList.remove('current'));
   const cur = stepMap[id];
@@ -1372,7 +1454,7 @@ document.getElementById('next-stage1').addEventListener('click', () => {
 
 document.getElementById('next-stage2').addEventListener('click', () => {
   appData.stage2.stt = document.getElementById('stt-stage2').value.trim();
-  setStamp(3, '관찰하기 완료!');
+  setStamp(4, '관찰하기 완료!');
   appData.stageQuiz.total = questionCount;
   activeQuestions = [...quizCurriculum].sort(() => 0.5 - Math.random()).slice(0, questionCount);
   quizIndex = 0; wrongList = []; isReviewMode = false;
@@ -1425,14 +1507,14 @@ document.getElementById('hide-example').addEventListener('click', () => {
 
 document.getElementById('next-stage5').addEventListener('click', () => {
   appData.stage5.stt = document.getElementById('stt-stage5').value.trim();
-  setStamp(5, '나중 생각 완료!');
+  setStamp(6, '나중 생각 완료!');
   showScreen('screen-stage6');
 });
 
 document.getElementById('btn-re-record').addEventListener('click', () => {
-  document.getElementById('stamp5').classList.remove('active');
-  document.getElementById('stamp5').innerHTML = '5';
-  document.querySelector('.stamp-container[data-step="5"]').classList.remove('done');
+  document.getElementById('stamp6').classList.remove('active');
+  document.getElementById('stamp6').innerHTML = '6';
+  document.querySelector('.stamp-container[data-step="6"]').classList.remove('done');
   document.getElementById('stt-stage5').value = '';
   document.getElementById('next-stage5').style.display = 'none';
   selectedStar = 0; updateStars();
@@ -1519,7 +1601,7 @@ async function actuallySubmit() {
     alert('GAS_URL이 설정되지 않았어요.');
     return;
   }
-  setStamp(6, '자기 평가 완료!');
+  setStamp(7, '자기 평가 완료!');
   document.getElementById('loading').style.display = 'flex';
 
   try {
