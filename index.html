@@ -437,6 +437,52 @@
   .sticker-choice:hover { transform:scale(1.15); }
   .sticker-choice.picked { background:var(--accent); transform:scale(1.1); }
 
+  /* ===== 수료증 / 배움기록표 ===== */
+  .certificate {
+    width:100%; max-width:780px; background:white;
+    border:8px double #feca57; border-radius:28px;
+    padding:30px 42px; box-shadow:0 15px 40px rgba(0,0,0,0.12);
+    text-align:center; position:relative;
+  }
+  .cert-ribbon {
+    font-size:36px; font-weight:bold; color:var(--primary);
+    text-shadow:1px 1px 0 #fff; margin-bottom:4px;
+  }
+  .cert-sub { font-size:18px; color:#999; margin-bottom:10px; }
+  .cert-name {
+    font-size:42px; font-weight:bold; color:#333; margin:6px 0 2px 0;
+  }
+  .cert-date { font-size:18px; color:#aaa; margin-bottom:18px; }
+  .cert-stats {
+    display:flex; gap:14px; justify-content:center; margin-bottom:18px;
+  }
+  .cert-stat {
+    flex:1; background:#fff8e1; border:3px solid #ffe082;
+    border-radius:18px; padding:14px 8px;
+  }
+  .cert-stat-label { font-size:18px; color:#7a5c00; margin-bottom:6px; }
+  .cert-stat-value { font-size:30px; font-weight:bold; color:#333; }
+  .cert-learned {
+    background:#f0fdf4; border:3px dashed #4ecdc4;
+    border-radius:18px; padding:16px 24px; margin-bottom:16px; text-align:left;
+  }
+  .cert-learned-title {
+    font-size:22px; font-weight:bold; color:#0a8a6e;
+    text-align:center; margin-bottom:10px;
+  }
+  .cert-learned-list { margin:0; padding-left:26px; }
+  .cert-learned-list li { font-size:21px; color:#333; line-height:1.8; }
+  .cert-record {
+    background:#f8f9fa; border-radius:18px; padding:16px 24px; margin-bottom:16px;
+  }
+  .cert-record-row { display:flex; align-items:center; gap:14px; margin:10px 0; }
+  .cert-record-label {
+    font-size:19px; font-weight:bold; color:#555; min-width:120px; text-align:left;
+  }
+  .cert-record-row audio { flex:1; margin-top:0; }
+  .cert-no-audio { flex:1; font-size:17px; color:#aaa; text-align:left; }
+  .cert-footer { font-size:24px; font-weight:bold; color:var(--primary); margin-top:6px; }
+
   /* ===== Loading ===== */
   #loading {
     position:fixed; top:0; left:0; width:100%; height:100%;
@@ -725,14 +771,15 @@
       </div>
     </div>
 
-    <div class="example-card" id="example-card">
-      <h3>📖 예시 문장 (클릭하면 읽어줘요)</h3>
-      <div class="example-list" id="example-list"></div>
+    <!-- 예시 문장: 기본 숨김, 버튼으로 토글 -->
+    <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+      <button class="btn btn-yellow" id="show-example" style="font-size:20px; padding:10px 22px;">📖 예시 문장 보기</button>
+      <button class="btn" id="next-stage5" style="display:none;">평가하러 가기 ➡️</button>
     </div>
 
-    <div style="margin-top:10px; display:flex; gap:10px;">
-      <button class="btn btn-yellow" id="hide-example" style="display:none; font-size:20px; padding:10px 22px;">예시 가리고 다시 도전! 🎯</button>
-      <button class="btn" id="next-stage5" style="display:none;">평가하러 가기 ➡️</button>
+    <div class="example-card" id="example-card" style="display:none;">
+      <h3>📖 예시 문장 (클릭하면 읽어줘요)</h3>
+      <div class="example-list" id="example-list"></div>
     </div>
   </div>
 
@@ -760,11 +807,8 @@
       <p>새롭게 배운 단어(<b>변, 꼭짓점</b>)나 도형의 특징을 떠올려 보세요!</p>
     </div>
 
-    <p id="listen-first-notice" style="font-size:20px; color:#e67e22; margin:5px 0; font-weight:bold;">
-      👂 먼저 위에서 '나중 생각' 녹음을 들어본 뒤 별점을 줄 수 있어요!
-    </p>
-    <p id="rate-prompt" style="font-size:22px; color:#444; margin:5px 0; font-weight:bold; display:none;">⭐ 더 알게 된 내용이 있다면 별점으로 칭찬해주세요!</p>
-    <div class="stars" id="star-row" style="opacity:0.4; pointer-events:none;">
+    <p id="rate-prompt" style="font-size:22px; color:#444; margin:5px 0; font-weight:bold;">⭐ 더 알게 된 내용이 있다면 별점으로 칭찬해주세요!</p>
+    <div class="stars" id="star-row">
       <span class="star" data-val="1">★</span>
       <span class="star" data-val="2">★</span>
       <span class="star" data-val="3">★</span>
@@ -788,13 +832,51 @@
     </div>
   </div>
 
-  <!-- End -->
-  <div id="screen-end" class="screen" style="justify-content:center; align-items:center;">
-    <h1>🎉 배움 기록표 완성! 🎉</h1>
-    <h1 id="end-student-name" style="font-size:38px; color:#333;"></h1>
-    <div style="font-size:120px; margin:15px;">🏅</div>
-    <p style="font-size:30px;">오늘도 열심히 참여해 주어서 고마워요!</p>
-    <button class="btn" onclick="location.reload()" style="margin-top:25px;">처음으로 🏠</button>
+  <!-- End: 배움기록표(수료증) -->
+  <div id="screen-end" class="screen">
+    <div class="certificate" id="certificate">
+      <div class="cert-ribbon">🏅 배움 기록표 🏅</div>
+      <div class="cert-sub">다함께 도형 탐험대</div>
+      <div class="cert-name" id="cert-name">○○○ 학생</div>
+      <div class="cert-date" id="cert-date"></div>
+
+      <div class="cert-stats">
+        <div class="cert-stat">
+          <div class="cert-stat-label">⭐ 자기 평가</div>
+          <div class="cert-stat-value" id="cert-stars">★★★★★</div>
+        </div>
+        <div class="cert-stat">
+          <div class="cert-stat-label">📝 정답률</div>
+          <div class="cert-stat-value" id="cert-accuracy">-</div>
+        </div>
+        <div class="cert-stat">
+          <div class="cert-stat-label">🎁 칭찬 스티커</div>
+          <div class="cert-stat-value" id="cert-sticker">🏅</div>
+        </div>
+      </div>
+
+      <div class="cert-learned">
+        <div class="cert-learned-title">📚 오늘 배운 도형 이야기</div>
+        <ul class="cert-learned-list" id="cert-learned-list"></ul>
+      </div>
+
+      <div class="cert-record">
+        <div class="cert-record-row">
+          <span class="cert-record-label">🌱 처음 생각</span>
+          <audio id="cert-audio-1" controls></audio>
+          <span class="cert-no-audio" id="cert-no-audio-1" style="display:none;">(녹음 없음 · 키보드로 입력)</span>
+        </div>
+        <div class="cert-record-row">
+          <span class="cert-record-label">🌟 나중 생각</span>
+          <audio id="cert-audio-5" controls></audio>
+          <span class="cert-no-audio" id="cert-no-audio-5" style="display:none;">(녹음 없음 · 키보드로 입력)</span>
+        </div>
+      </div>
+
+      <div class="cert-footer">오늘도 열심히 참여해 주어서 고마워요! 🌈</div>
+    </div>
+
+    <button class="btn" onclick="location.reload()" style="margin-top:20px;">처음으로 🏠</button>
   </div>
 
   <!-- 개념 학습 팝업 -->
@@ -865,7 +947,6 @@ let conceptPopupIdx = 0;
 let pickedSticker = '';
 let reflectFeeling = '', reflectLearned = '';
 let helpUsedCount = 0;
-let starsUnlocked = false;
 
 let appData = {
   studentName:'', questionCount:5,
@@ -1446,6 +1527,8 @@ document.getElementById('btn-quiz-next').onclick = () => {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  // 화면 전환 시 스크롤 맨 위로
+  document.getElementById(id).scrollTop = 0;
 
   // 1줄 요약 표시 (개념 학습 이후 모든 화면)
   const showReminder = !['screen-start','screen-stage1','screen-end'].includes(id);
@@ -1474,8 +1557,12 @@ function showScreen(id) {
 
   if (id === 'screen-stage5') {
     renderExamples();
-    document.getElementById('hide-example').style.display = 'inline-flex';
-    document.getElementById('example-card').style.display = 'block';
+    // 예시는 기본 숨김 — 버튼으로 토글 (스크롤 방지)
+    const exCard = document.getElementById('example-card');
+    const exBtn = document.getElementById('show-example');
+    exCard.style.display = 'none';
+    exBtn.textContent = '📖 예시 문장 보기';
+    exBtn.classList.remove('active');
   }
   if (id === 'screen-stage6') prepareSelfEval();
 }
@@ -1571,13 +1658,19 @@ function renderExamples() {
   });
 }
 
-document.getElementById('hide-example').addEventListener('click', () => {
-  document.getElementById('example-card').style.display = 'none';
-  document.getElementById('hide-example').style.display = 'none';
-  document.getElementById('stt-stage5').value = '';
-  document.getElementById('play-stage5').disabled = true;
-  document.getElementById('next-stage5').style.display = 'none';
-  alert('🎯 이제 예시 없이 도전해보세요!\n다시 녹음해주세요.');
+// 예시 문장 보기/숨기기 토글
+document.getElementById('show-example').addEventListener('click', () => {
+  const exCard = document.getElementById('example-card');
+  const btn = document.getElementById('show-example');
+  const willShow = exCard.style.display === 'none';
+  exCard.style.display = willShow ? 'block' : 'none';
+  btn.textContent = willShow ? '📖 예시 숨기기' : '📖 예시 문장 보기';
+  btn.classList.toggle('active', willShow);
+  playClick();
+  if (willShow) {
+    appData.stage5.usedExample = true;
+    setTimeout(() => exCard.scrollIntoView({ behavior:'smooth', block:'nearest' }), 100);
+  }
 });
 
 document.getElementById('next-stage5').addEventListener('click', () => {
@@ -1603,23 +1696,10 @@ function prepareSelfEval() {
   document.getElementById('eval-stt-5').innerText = appData.stage5.stt || '(내용 없음)';
   document.getElementById('eval-audio-5').src = appData.stage5.blobUrl || '';
 
-  // 별점은 나중 생각 녹음을 들어본 뒤에만 활성화
-  starsUnlocked = false;
-  document.getElementById('star-row').style.opacity = '0.4';
-  document.getElementById('star-row').style.pointerEvents = 'none';
-  document.getElementById('listen-first-notice').style.display = 'block';
-  document.getElementById('rate-prompt').style.display = 'none';
-}
-
-// 나중 생각 녹음 재생 시 별점 잠금 해제
-document.getElementById('eval-audio-5').addEventListener('play', () => {
-  if (starsUnlocked) return;
-  starsUnlocked = true;
+  // 별점은 녹음 여부와 상관없이 항상 사용 가능 (키보드 입력만 해도 OK)
   document.getElementById('star-row').style.opacity = '1';
   document.getElementById('star-row').style.pointerEvents = 'auto';
-  document.getElementById('listen-first-notice').style.display = 'none';
-  document.getElementById('rate-prompt').style.display = 'block';
-});
+}
 
 const stars = document.querySelectorAll('.star');
 stars.forEach(s => {
@@ -1664,6 +1744,67 @@ function showRewardConfetti() {
   setTimeout(() => { overlay.style.display = 'none'; }, 3000);
 }
 
+// === 배움기록표(수료증) 채우기 ===
+function renderCertificate() {
+  // 이름 + 날짜
+  document.getElementById('cert-name').innerText = (appData.studentName || '○○○') + ' 학생';
+  document.getElementById('cert-date').innerText =
+    new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
+
+  // 별점
+  const star = appData.rating || 0;
+  document.getElementById('cert-stars').innerHTML =
+    '<span style="color:#feca57;">' + '★'.repeat(star) + '</span>' +
+    '<span style="color:#ddd;">' + '★'.repeat(5 - star) + '</span>';
+
+  // 정답률
+  const correct = appData.stageQuiz.correct || 0;
+  const total = appData.stageQuiz.total || 0;
+  const pct = total > 0 ? Math.round(correct / total * 100) : 0;
+  document.getElementById('cert-accuracy').innerHTML =
+    pct + '% <span style="font-size:17px; color:#999;">(' + correct + '/' + total + ')</span>';
+
+  // 칭찬 스티커
+  document.getElementById('cert-sticker').innerText = appData.sticker || '🏅';
+
+  // 오늘 배운 도형 이야기 목록
+  const learnedList = document.getElementById('cert-learned-list');
+  learnedList.innerHTML = '';
+  const learned = [
+    '<b style="color:#e6a800;">원</b>은 변과 꼭짓점이 하나도 없어요.',
+    '<b style="color:#1864ab;">삼각형</b>은 변이 3개, 꼭짓점이 3개 있어요.',
+    '<b style="color:#c0392b;">사각형</b>은 변이 4개, 꼭짓점이 4개 있어요.'
+  ];
+  learned.forEach(t => {
+    const li = document.createElement('li');
+    li.innerHTML = t;
+    learnedList.appendChild(li);
+  });
+  if (appData.reflectLearned) {
+    const li = document.createElement('li');
+    li.innerHTML = '✨ 오늘 가장 많이 배운 것: <b>' + appData.reflectLearned + '</b>';
+    learnedList.appendChild(li);
+  }
+
+  // 녹음 재생 (없으면 안내 문구)
+  const setAudio = (num) => {
+    const url = appData['stage' + num].blobUrl || '';
+    const audio = document.getElementById('cert-audio-' + num);
+    const noAudio = document.getElementById('cert-no-audio-' + num);
+    if (url) {
+      audio.src = url;
+      audio.style.display = '';
+      noAudio.style.display = 'none';
+    } else {
+      audio.removeAttribute('src');
+      audio.style.display = 'none';
+      noAudio.style.display = 'block';
+    }
+  };
+  setAudio(1);
+  setAudio(5);
+}
+
 document.getElementById('btn-submit').addEventListener('click', async () => {
   if (selectedStar <= 3 && !isRelearning) {
     document.getElementById('popup-bg').classList.add('show');
@@ -1706,7 +1847,7 @@ async function actuallySubmit() {
     document.getElementById('loading').style.display = 'none';
 
     if (result.status === 'success') {
-      document.getElementById('end-student-name').innerText = appData.studentName + ' 학생';
+      renderCertificate();
       showScreen('screen-end');
       showRewardConfetti();
       setTimeout(showRewardConfetti, 800);
@@ -1717,7 +1858,8 @@ async function actuallySubmit() {
   } catch (err) {
     document.getElementById('loading').style.display = 'none';
     console.error(err);
-    document.getElementById('end-student-name').innerText = appData.studentName + ' 학생';
+    // 전송 실패해도 학생에게는 기록표를 보여줌
+    renderCertificate();
     showScreen('screen-end');
     showRewardConfetti();
   }
